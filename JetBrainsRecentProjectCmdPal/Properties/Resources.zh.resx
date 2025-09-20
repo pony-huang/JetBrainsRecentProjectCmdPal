@@ -1,0 +1,78 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    
+    <!-- 设置相关资源 -->
+    <data name="settings_display_project_name" xml:space="preserve">
+        <value>显示项目名称</value>
+    </data>
+    <data name="settings_display_last_time" xml:space="preserve">
+        <value>显示最后打开时间</value>
+    </data>
+    <data name="settings_custom_vmoptions" xml:space="preserve">
+        <value>自定义 VM 选项</value>
+    </data>
+    <data name="settings_shell_script_location" xml:space="preserve">
+        <value>Shell 脚本位置</value>
+    </data>
+    <data name="settings_tools_install_location" xml:space="preserve">
+        <value>JetBrains 工具安装位置</value>
+    </data>
+    <data name="settings_sync_jetbrains_toolbox" xml:space="preserve">
+        <value>同步 JetBrains Toolbox</value>
+    </data>
+    <data name="settings_systemconfiglogs_directory" xml:space="preserve">
+        <value>系统配置和日志目录</value>
+    </data>
+    <data name="settings_run_as_administrator" xml:space="preserve">
+        <value>以管理员身份运行</value>
+    </data>
+    
+    <!-- 命令消息 -->
+    <data name="msg_run_as" xml:space="preserve">
+        <value>运行为</value>
+    </data>
+    <data name="msg_run_as_administrator" xml:space="preserve">
+        <value>以管理员身份运行</value>
+    </data>
+    
+    <!-- 复制路径相关资源 -->
+    <data name="copy_path" xml:space="preserve">
+        <value>复制路径</value>
+    </data>
+    <data name="copy_path_ok" xml:space="preserve">
+        <value>路径已复制到剪贴板。</value>
+    </data>
+    <data name="clipboard_failed" xml:space="preserve">
+        <value>无法设置剪贴板内容，可能被其他程序占用</value>
+    </data>
+    
+    <!-- JetBrains 产品归档页面 -->
+    <data name="jetbrains_recent_projects_title" xml:space="preserve">
+        <value>JetBrains 最近项目</value>
+    </data>
+    <data name="jetbrains_recent_projects_name" xml:space="preserve">
+        <value>JetBrains 最近项目</value>
+    </data>
+    
+    <!-- 异常消息 -->
+    <data name="run_as_exception" xml:space="preserve">
+        <value>无法以用户身份执行</value>
+    </data>
+    <data name="run_admin_exception" xml:space="preserve">
+        <value>无法以管理员身份执行</value>
+    </data>
+    <data name="settings_jetbrains_product_archive" xml:space="preserve">
+        <value>工具分组</value>
+    </data>
+</root>

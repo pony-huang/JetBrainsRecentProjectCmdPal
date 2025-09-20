@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    
+    <!-- Settings related resources -->
+    <data name="settings_display_project_name" xml:space="preserve">
+        <value>Show item names</value>
+    </data>
+    <data name="settings_display_last_time" xml:space="preserve">
+        <value>Show last opened time</value>
+    </data>
+    <data name="settings_custom_vmoptions" xml:space="preserve">
+        <value>Custom VM Options</value>
+    </data>
+    <data name="settings_shell_script_location" xml:space="preserve">
+        <value>Shell scripts location</value>
+    </data>
+    <data name="settings_tools_install_location" xml:space="preserve">
+        <value>Tools installation locations</value>
+    </data>
+    <data name="settings_sync_jetbrains_toolbox" xml:space="preserve">
+        <value>Sync JetBrains Toolbox</value>
+    </data>
+    <data name="settings_systemconfiglogs_directory" xml:space="preserve">
+        <value>System config and logs directory</value>
+    </data>
+    <data name="settings_run_as_administrator" xml:space="preserve">
+        <value>Run as administrator</value>
+    </data>
+    
+    <!-- Command messages -->
+    <data name="msg_run_as" xml:space="preserve">
+        <value>Run as</value>
+    </data>
+    <data name="msg_run_as_administrator" xml:space="preserve">
+        <value>Run as administrator</value>
+    </data>
+    
+    <!-- Copy path related resources -->
+    <data name="copy_path" xml:space="preserve">
+        <value>Copy path</value>
+    </data>
+    <data name="copy_path_ok" xml:space="preserve">
+        <value>Path copied to clipboard.</value>
+    </data>
+    <data name="clipboard_failed" xml:space="preserve">
+        <value>Failed to set clipboard content, another program may have control</value>
+    </data>
+    
+    <!-- JetBrains Product Archive Page -->
+    <data name="jetbrains_recent_projects_title" xml:space="preserve">
+        <value>JetBrains Recent Projects</value>
+    </data>
+    <data name="jetbrains_recent_projects_name" xml:space="preserve">
+        <value>JetBrains Recent Projects</value>
+    </data>
+    
+    <!-- Exception messages -->
+    <data name="run_as_exception" xml:space="preserve">
+        <value>Unable to execute as user</value>
+    </data>
+    <data name="run_admin_exception" xml:space="preserve">
+        <value>Unable to execute as admin</value>
+    </data>
+    <data name="settings_jetbrains_product_archive" xml:space="preserve">
+        <value>Each tool group</value>
+    </data>
+    
+    <!-- JetBrains Product Page -->
+    <data name="search_recent_projects_placeholder" xml:space="preserve">
+        <value>Search {0} recent projects...</value>
+    </data>
+    <data name="project_path_label" xml:space="preserve">
+        <value>Project Path</value>
+    </data>
+</root>

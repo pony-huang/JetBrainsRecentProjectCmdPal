@@ -1,0 +1,16 @@
+<Project>
+  <!-- Disable PRI generation for test projects -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <WindowsPackageType>None</WindowsPackageType>
+    <GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+    <AppxPackage>false</AppxPackage>
+    <EnableDefaultPriItems>false</EnableDefaultPriItems>
+  </PropertyGroup>
+
+  <!-- Override PRI generation targets for test projects -->
+  <Target Name="ExpandPriContent" Condition="'$(IsTestProject)' == 'true'" />
+  <Target Name="GeneratePriConfigXml" Condition="'$(IsTestProject)' == 'true'" />
+  <Target Name="CreatePriFilesFromLayout" Condition="'$(IsTestProject)' == 'true'" />
+  <Target Name="GenerateProjectPriFile" Condition="'$(IsTestProject)' == 'true'" />
+</Project>

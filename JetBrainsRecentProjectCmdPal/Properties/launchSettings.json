@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "JetBrainsRecentProjectCmdPal (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "JetBrainsRecentProjectCmdPal (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
