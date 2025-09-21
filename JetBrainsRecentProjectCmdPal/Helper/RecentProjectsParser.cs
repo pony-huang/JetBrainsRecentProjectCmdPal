@@ -13,11 +13,17 @@ namespace JetBrainsRecentProjectCmdPal.Helper;
 /// </summary>
 public static class RecentProjectsParser
 {
+    // 缓存XmlSerializer实例以提高性能
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
+    private static readonly XmlSerializer _serializer = new(typeof(RecentProjectsApplication));
+
     /// <summary>
     /// 从XML文件解析最近项目列表
     /// </summary>
     /// <param name="xmlFilePath">recentProjects.xml文件路径</param>
     /// <returns>最近项目列表</returns>
+    [RequiresUnreferencedCode("XML serialization may require types that cannot be statically analyzed")]
+    [RequiresDynamicCode("XML serialization may require dynamic code generation")]
     public static List<RecentProject> ParseFromFile(string xmlFilePath)
     {
         ArgumentNullException.ThrowIfNull(xmlFilePath);
@@ -43,7 +49,10 @@ public static class RecentProjectsParser
     /// </summary>
     /// <param name="xmlContent">XML内容字符串</param>
     /// <returns>最近项目列表</returns>
-    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "XML serialization types are preserved through XML attributes")]
+    [RequiresUnreferencedCode("XML serialization may require types that cannot be statically analyzed")]
+    [RequiresDynamicCode("XML serialization may require dynamic code generation")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "XML serialization types are preserved through DynamicallyAccessedMembers attributes")]
+    [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling", Justification = "XML serialization is required for parsing JetBrains configuration files")]
     public static List<RecentProject> ParseFromXmlString(string xmlContent)
     {
         ArgumentNullException.ThrowIfNull(xmlContent);
@@ -52,8 +61,6 @@ public static class RecentProjectsParser
 
         try
         {
-            var serializer = new XmlSerializer(typeof(RecentProjectsApplication));
-            
             // 创建安全的 XmlReader 设置
             var settings = new XmlReaderSettings
             {
@@ -64,7 +71,7 @@ public static class RecentProjectsParser
             using var stringReader = new StringReader(xmlContent);
             using var xmlReader = XmlReader.Create(stringReader, settings);
             
-            if (serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
+            if (_serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
             {
                 // 查找additionalInfo选项
                 var additionalInfoOption = app.Component.Options
@@ -93,7 +100,10 @@ public static class RecentProjectsParser
     /// </summary>
     /// <param name="xmlFilePath">recentProjects.xml文件路径</param>
     /// <returns>最后打开的项目路径</returns>
-    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "XML serialization types are preserved through XML attributes")]
+    [RequiresUnreferencedCode("XML serialization may require types that cannot be statically analyzed")]
+    [RequiresDynamicCode("XML serialization may require dynamic code generation")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "XML serialization types are preserved through DynamicallyAccessedMembers attributes")]
+    [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling", Justification = "XML serialization is required for parsing JetBrains configuration files")]
     public static string? GetLastOpenedProject(string xmlFilePath)
     {
         ArgumentNullException.ThrowIfNull(xmlFilePath);
@@ -104,7 +114,6 @@ public static class RecentProjectsParser
         try
         {
             var xmlContent = File.ReadAllText(xmlFilePath);
-            var serializer = new XmlSerializer(typeof(RecentProjectsApplication));
             
             // 创建安全的 XmlReader 设置
             var settings = new XmlReaderSettings
@@ -116,7 +125,7 @@ public static class RecentProjectsParser
             using var stringReader = new StringReader(xmlContent);
             using var xmlReader = XmlReader.Create(stringReader, settings);
             
-            if (serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
+            if (_serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
             {
                 var lastOpenedOption = app.Component.Options
                     .FirstOrDefault(o => o.Name == "lastOpenedProject");
@@ -137,7 +146,10 @@ public static class RecentProjectsParser
     /// </summary>
     /// <param name="xmlFilePath">recentProjects.xml文件路径</param>
     /// <returns>最后项目位置</returns>
-    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "XML serialization types are preserved through XML attributes")]
+    [RequiresUnreferencedCode("XML serialization may require types that cannot be statically analyzed")]
+    [RequiresDynamicCode("XML serialization may require dynamic code generation")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "XML serialization types are preserved through DynamicallyAccessedMembers attributes")]
+    [UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling", Justification = "XML serialization is required for parsing JetBrains configuration files")]
     public static string? GetLastProjectLocation(string xmlFilePath)
     {
         ArgumentNullException.ThrowIfNull(xmlFilePath);
@@ -148,7 +160,6 @@ public static class RecentProjectsParser
         try
         {
             var xmlContent = File.ReadAllText(xmlFilePath);
-            var serializer = new XmlSerializer(typeof(RecentProjectsApplication));
             
             // 创建安全的 XmlReader 设置
             var settings = new XmlReaderSettings
@@ -160,7 +171,7 @@ public static class RecentProjectsParser
             using var stringReader = new StringReader(xmlContent);
             using var xmlReader = XmlReader.Create(stringReader, settings);
             
-            if (serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
+            if (_serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
             {
                 var lastLocationOption = app.Component.Options
                     .FirstOrDefault(o => o.Name == "lastProjectLocation");

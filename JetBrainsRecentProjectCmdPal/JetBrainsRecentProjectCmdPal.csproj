@@ -10,9 +10,18 @@
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
 
+    <Platforms>x64;ARM64</Platforms>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>false</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
+
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+
+    <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
+
+    <DefaultLanguage>en-US</DefaultLanguage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,6 +53,19 @@
     <PackageReference Include="Microsoft.Web.WebView2" />
     <PackageReference Include="System.Text.Json" />
     <PackageReference Include="Shmuelie.WinRTServer" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <!--
@@ -84,6 +106,10 @@
     <!-- In Release builds, trimming is enabled by default. 
          feel free to disable this if needed -->
     <PublishTrimmed>true</PublishTrimmed>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <WarningsNotAsErrors>IL2081;IL2104;IL2026;IL3050</WarningsNotAsErrors>
   </PropertyGroup>
 
 
