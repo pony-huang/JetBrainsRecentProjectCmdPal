@@ -28,9 +28,6 @@
     <data name="settings_tools_install_location" xml:space="preserve">
         <value>JetBrains 工具安装位置</value>
     </data>
-    <data name="settings_sync_jetbrains_toolbox" xml:space="preserve">
-        <value>同步 JetBrains Toolbox</value>
-    </data>
     <data name="settings_systemconfiglogs_directory" xml:space="preserve">
         <value>系统配置和日志目录</value>
     </data>
@@ -40,7 +37,7 @@
     
     <!-- 命令消息 -->
     <data name="msg_run_as" xml:space="preserve">
-        <value>运行为</value>
+        <value>普通用户运行</value>
     </data>
     <data name="msg_run_as_administrator" xml:space="preserve">
         <value>以管理员身份运行</value>

@@ -34,9 +34,6 @@
     <data name="settings_tools_install_location" xml:space="preserve">
         <value>Tools installation locations</value>
     </data>
-    <data name="settings_sync_jetbrains_toolbox" xml:space="preserve">
-        <value>Sync JetBrains Toolbox</value>
-    </data>
     <data name="settings_systemconfiglogs_directory" xml:space="preserve">
         <value>System config and logs directory</value>
     </data>
