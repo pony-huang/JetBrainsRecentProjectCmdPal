@@ -12,7 +12,7 @@ public class CopyPathCommand : InvokableCommand
     internal CopyPathCommand(string fullname)
     {
         _fullPath = fullname;
-        Name = "Copy Path";
+        Name = Resources.copy_path;
         Icon = new IconInfo("\uE71B");
     }
 

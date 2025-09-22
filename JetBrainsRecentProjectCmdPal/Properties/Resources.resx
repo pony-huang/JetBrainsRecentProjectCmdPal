@@ -19,20 +19,8 @@
     </resheader>
     
     <!-- Settings related resources -->
-    <data name="settings_display_project_name" xml:space="preserve">
-        <value>Show item names</value>
-    </data>
-    <data name="settings_display_last_time" xml:space="preserve">
-        <value>Show last opened time</value>
-    </data>
-    <data name="settings_custom_vmoptions" xml:space="preserve">
-        <value>Custom VM Options</value>
-    </data>
-    <data name="settings_shell_script_location" xml:space="preserve">
-        <value>Shell scripts location</value>
-    </data>
     <data name="settings_tools_install_location" xml:space="preserve">
-        <value>Tools installation locations</value>
+        <value>Tools installation location</value>
     </data>
     <data name="settings_systemconfiglogs_directory" xml:space="preserve">
         <value>System config and logs directory</value>
@@ -48,19 +36,22 @@
     <data name="msg_run_as_administrator" xml:space="preserve">
         <value>Run as administrator</value>
     </data>
+    <data name="msg_open_in_explorer" xml:space="preserve">
+        <value>Open in Explorer</value>
+    </data>
     
     <!-- Copy path related resources -->
     <data name="copy_path" xml:space="preserve">
         <value>Copy path</value>
     </data>
     <data name="copy_path_ok" xml:space="preserve">
-        <value>Path copied to clipboard.</value>
+        <value>Path copied to clipboard</value>
     </data>
     <data name="clipboard_failed" xml:space="preserve">
         <value>Failed to set clipboard content, another program may have control</value>
     </data>
     
-    <!-- JetBrains Product Archive Page -->
+    <!-- JetBrains product archive page -->
     <data name="jetbrains_recent_projects_title" xml:space="preserve">
         <value>JetBrains Recent Projects</value>
     </data>
@@ -73,17 +64,58 @@
         <value>Unable to execute as user</value>
     </data>
     <data name="run_admin_exception" xml:space="preserve">
-        <value>Unable to execute as admin</value>
+        <value>Unable to execute as administrator</value>
+    </data>
+    <data name="open_explorer_exception" xml:space="preserve">
+        <value>Unable to open in Explorer</value>
     </data>
     <data name="settings_jetbrains_product_archive" xml:space="preserve">
-        <value>Each tool group</value>
+        <value>Group projects by product</value>
     </data>
     
-    <!-- JetBrains Product Page -->
+    <!-- JetBrains product page -->
     <data name="search_recent_projects_placeholder" xml:space="preserve">
-        <value>Search {0} recent projects...</value>
+        <value>Search {0}</value>
     </data>
     <data name="project_path_label" xml:space="preserve">
-        <value>Project Path</value>
+        <value>Project path</value>
+    </data>
+    
+    <!-- Project details -->
+    <data name="product_code_label" xml:space="preserve">
+        <value>Product code</value>
+    </data>
+    <data name="project_status_label" xml:space="preserve">
+        <value>Project status</value>
+    </data>
+    <data name="project_status_opened" xml:space="preserve">
+        <value>Opened</value>
+    </data>
+    <data name="project_status_closed" xml:space="preserve">
+        <value>Closed</value>
+    </data>
+    <data name="lasted_open_time_label" xml:space="preserve">
+        <value>Last opened time</value>
+    </data>
+    <data name="open_time_label" xml:space="preserve">
+        <value>Open time</value>
+    </data>
+    <data name="build_label" xml:space="preserve">
+        <value>Build</value>
+    </data>
+    <data name="project_workspace_id_label" xml:space="preserve">
+        <value>Project workspace ID</value>
+    </data>
+    <data name="alarm_label" xml:space="preserve">
+        <value>Alarm</value>
+    </data>
+    <data name="project_not_found" xml:space="preserve">
+        <value>Project not found</value>
+    </data>
+    <data name="settings_custom_options" xml:space="preserve">
+        <value>Custom options</value>
+    </data>
+    <data name="settings_custom_options_description" xml:space="preserve">
+        <value>Enable custom configuration for tools installation location and system config logs directory</value>
     </data>
 </root>

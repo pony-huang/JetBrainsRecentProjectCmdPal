@@ -14,40 +14,38 @@ namespace JetBrainsRecentProjectCmdPal.Settings
             "",
             false);
 
-        public bool RunAsAdministrator => _runAsAdministrator.Value;
-        
-        
+
         private readonly ToggleSetting _jetbrainsProductArchive = new(
             Namespaced(nameof(JetBrainsProductArchive)),
             Resources.settings_jetbrains_product_archive,
             "",
             false);
 
-        public bool JetBrainsProductArchive => _jetbrainsProductArchive.Value;
-        
-        private readonly TextSetting _shellScripts = new(
-            Namespaced(nameof(ShellScripts)),
-            Resources.settings_shell_script_location,
-            Resources.settings_shell_script_location,
-            "");
 
-        public string ShellScripts => _shellScripts.Value ?? string.Empty;
+        private readonly ToggleSetting _jetbrainsCustomOption = new(
+            Namespaced(nameof(JetBrainsCustomOption)),
+            Resources.settings_custom_options,
+            Resources.settings_custom_options_description,
+            false);
+
 
         private readonly TextSetting _toolsInstallLocation = new(
             Namespaced(nameof(ToolsInstallLocation)),
             Resources.settings_tools_install_location,
-            Resources.settings_tools_install_location,
+            "",
             "");
 
-        public string ToolsInstallLocation => _toolsInstallLocation.Value ?? string.Empty;
-        
-        
+
         private readonly TextSetting _systemConfigLogslLocation = new(
             Namespaced(nameof(SystemConfigLogsLocation)),
             Resources.settings_systemconfiglogs_directory,
-            Resources.settings_systemconfiglogs_directory,
+            "",
             "");
 
+        public bool RunAsAdministrator => _runAsAdministrator.Value;
+        public bool JetBrainsProductArchive => _jetbrainsProductArchive.Value;
+        public bool JetBrainsCustomOption => _jetbrainsCustomOption.Value;
+        public string ToolsInstallLocation => _toolsInstallLocation.Value ?? string.Empty;
         public string SystemConfigLogsLocation => _systemConfigLogslLocation.Value ?? string.Empty;
 
         private static string SettingsJsonPath()
@@ -62,10 +60,10 @@ namespace JetBrainsRecentProjectCmdPal.Settings
             FilePath = SettingsJsonPath();
             Settings.Add(_runAsAdministrator);
             Settings.Add(_jetbrainsProductArchive);
-            Settings.Add(_shellScripts);
+            Settings.Add(_jetbrainsCustomOption);
             Settings.Add(_toolsInstallLocation);
             Settings.Add(_systemConfigLogslLocation);
-            
+
             base.LoadSettings();
             Settings.SettingsChanged += (s, a) => SaveSettings();
         }

@@ -5,23 +5,24 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
+using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JetBrainsRecentProjectCmdPal.Helper;
 
 /// <summary>
-/// 用于解析JetBrains IntelliJ IDEA的recentProjects.xml文件的解析器
+/// Parser for JetBrains IntelliJ IDEA's recentProjects.xml file
 /// </summary>
 public static class RecentProjectsParser
 {
     // 缓存XmlSerializer实例以提高性能
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-    private static readonly XmlSerializer _serializer = new(typeof(RecentProjectsApplication));
+    private static readonly XmlSerializer Serializer = new(typeof(RecentProjectsApplication));
 
     /// <summary>
-    /// 从XML文件解析最近项目列表
+    /// From XML file parse recent projects list
     /// </summary>
-    /// <param name="xmlFilePath">recentProjects.xml文件路径</param>
-    /// <returns>最近项目列表</returns>
+    /// <param name="xmlFilePath">recentProjects.xml file path</param>
+    /// <returns>Recent projects list</returns>
     [RequiresUnreferencedCode("XML serialization may require types that cannot be statically analyzed")]
     [RequiresDynamicCode("XML serialization may require dynamic code generation")]
     public static List<RecentProject> ParseFromFile(string xmlFilePath)
@@ -39,16 +40,16 @@ public static class RecentProjectsParser
         catch (Exception ex)
         {
             // 记录错误或处理异常
-            Console.WriteLine($"解析XML文件时出错: {ex.Message}");
+            ExtensionHost.LogMessage($"解析XML文件时出错: {ex.Message}");
             return new List<RecentProject>();
         }
     }
 
     /// <summary>
-    /// 从XML字符串解析最近项目列表
+    /// From XML string parse recent projects list
     /// </summary>
-    /// <param name="xmlContent">XML内容字符串</param>
-    /// <returns>最近项目列表</returns>
+    /// <param name="xmlContent">XML content string</param>
+    /// <returns>Recent projects list</returns>
     [RequiresUnreferencedCode("XML serialization may require types that cannot be statically analyzed")]
     [RequiresDynamicCode("XML serialization may require dynamic code generation")]
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "XML serialization types are preserved through DynamicallyAccessedMembers attributes")]
@@ -61,7 +62,6 @@ public static class RecentProjectsParser
 
         try
         {
-            // 创建安全的 XmlReader 设置
             var settings = new XmlReaderSettings
             {
                 DtdProcessing = DtdProcessing.Prohibit,
@@ -71,35 +71,33 @@ public static class RecentProjectsParser
             using var stringReader = new StringReader(xmlContent);
             using var xmlReader = XmlReader.Create(stringReader, settings);
             
-            if (_serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
+            if (Serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
             {
-                // 查找additionalInfo选项
                 var additionalInfoOption = app.Component.Options
                     .FirstOrDefault(o => o.Name == "additionalInfo");
 
-                if (additionalInfoOption?.Map != null)
+                if (additionalInfoOption?.Map?.Entries != null)
                 {
-                    // 转换每个项目条目为RecentProject
                     projects = additionalInfoOption.Map.Entries
                         .Select(RecentProject.FromEntry)
+                        .Where(p => !string.IsNullOrEmpty(p.Key))
                         .ToList();
                 }
             }
         }
         catch (Exception ex)
         {
-            // 记录错误或处理异常
-            Console.WriteLine($"解析XML内容时出错: {ex.Message}");
+            ExtensionHost.LogMessage($"解析XML内容时出错: {ex.Message}");
         }
 
         return projects;
     }
 
     /// <summary>
-    /// 获取最后打开的项目路径
+    /// Gets the path of the last opened project
     /// </summary>
-    /// <param name="xmlFilePath">recentProjects.xml文件路径</param>
-    /// <returns>最后打开的项目路径</returns>
+    /// <param name="xmlFilePath">Path to recentProjects.xml file</param>
+    /// <returns>Path of the last opened project</returns>
     [RequiresUnreferencedCode("XML serialization may require types that cannot be statically analyzed")]
     [RequiresDynamicCode("XML serialization may require dynamic code generation")]
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "XML serialization types are preserved through DynamicallyAccessedMembers attributes")]
@@ -115,7 +113,6 @@ public static class RecentProjectsParser
         {
             var xmlContent = File.ReadAllText(xmlFilePath);
             
-            // 创建安全的 XmlReader 设置
             var settings = new XmlReaderSettings
             {
                 DtdProcessing = DtdProcessing.Prohibit,
@@ -125,7 +122,7 @@ public static class RecentProjectsParser
             using var stringReader = new StringReader(xmlContent);
             using var xmlReader = XmlReader.Create(stringReader, settings);
             
-            if (_serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
+            if (Serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
             {
                 var lastOpenedOption = app.Component.Options
                     .FirstOrDefault(o => o.Name == "lastOpenedProject");
@@ -135,17 +132,17 @@ public static class RecentProjectsParser
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取最后打开项目时出错: {ex.Message}");
+            ExtensionHost.LogMessage($"获取最后打开项目时出错: {ex.Message}");
         }
 
         return null;
     }
 
     /// <summary>
-    /// 获取最后项目位置
+    /// Gets the last project location
     /// </summary>
-    /// <param name="xmlFilePath">recentProjects.xml文件路径</param>
-    /// <returns>最后项目位置</returns>
+    /// <param name="xmlFilePath">Path to recentProjects.xml file</param>
+    /// <returns>Last project location</returns>
     [RequiresUnreferencedCode("XML serialization may require types that cannot be statically analyzed")]
     [RequiresDynamicCode("XML serialization may require dynamic code generation")]
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "XML serialization types are preserved through DynamicallyAccessedMembers attributes")]
@@ -161,7 +158,6 @@ public static class RecentProjectsParser
         {
             var xmlContent = File.ReadAllText(xmlFilePath);
             
-            // 创建安全的 XmlReader 设置
             var settings = new XmlReaderSettings
             {
                 DtdProcessing = DtdProcessing.Prohibit,
@@ -171,7 +167,7 @@ public static class RecentProjectsParser
             using var stringReader = new StringReader(xmlContent);
             using var xmlReader = XmlReader.Create(stringReader, settings);
             
-            if (_serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
+            if (Serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
             {
                 var lastLocationOption = app.Component.Options
                     .FirstOrDefault(o => o.Name == "lastProjectLocation");
@@ -181,7 +177,7 @@ public static class RecentProjectsParser
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取最后项目位置时出错: {ex.Message}");
+            ExtensionHost.LogMessage($"Failed to get last project location: {ex.Message}");
         }
 
         return null;

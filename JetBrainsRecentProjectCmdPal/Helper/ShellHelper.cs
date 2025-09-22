@@ -28,6 +28,7 @@ public  class ShellHelper
         };
         try
         {
+            ExtensionHost.LogMessage($"JBCML: Launching: {path} {args}");
             Process.Start(startInfo);
             return true;
         }

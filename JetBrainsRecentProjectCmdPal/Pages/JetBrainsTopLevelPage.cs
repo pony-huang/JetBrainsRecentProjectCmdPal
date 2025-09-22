@@ -6,33 +6,50 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JetBrainsRecentProjectCmdPal.Pages;
 
-public sealed class JetBrainsTopLevelPage : JetBrainsAllProductPage
+/// <summary>
+/// Top-level page that serves as the entry point for JetBrains recent projects functionality.
+/// Depending on settings, this page either shows all recent projects directly or provides
+/// a categorized view with separate pages for each installed JetBrains product.
+/// </summary>
+public sealed partial class JetBrainsTopLevelPage : JetBrainsAllProductPage
 {
+    /// <summary>
+    /// Initializes a new instance of the JetBrainsTopLevelPage class.
+    /// Sets up the default icon, title, and name for the top-level entry point.
+    /// </summary>
     public JetBrainsTopLevelPage()
     {
-        Icon = Icons.JetBrainsIcon;
+        Icon = IconHelper.DefaultIconInfo;
         Title = Resources.jetbrains_recent_projects_title;
         Name = Resources.jetbrains_recent_projects_name;
     }
 
+    /// <summary>
+    /// Gets the items to display in the command palette.
+    /// The behavior depends on the JetBrainsProductArchive setting:
+    /// - If enabled: Shows a list of installed JetBrains products as separate pages
+    /// - If disabled: Shows all recent projects directly (inherited from base class)
+    /// </summary>
+    /// <returns>Array of list items representing either product categories or recent projects</returns>
     public override IListItem[] GetItems()
     {
-        if (Query.Settings.JetBrainsProductArchive)
+        // Check if product archive mode is enabled (categorized view by product)
+        if (Search.Settings.JetBrainsProductArchive)
         {
-            // 动态获取已安装的产品
-            var installedProducts = Query.GetInstalledProducts();
+            var installedProducts = Search.GetInstalledProducts();
 
-            if (installedProducts.Any())
+            // If JetBrains products are installed, create product-specific pages
+            if (installedProducts.Count != 0)
             {
-                // 根据实际安装的产品生成列表项
-                return installedProducts
-                    .Where(product => !string.IsNullOrEmpty(product.ProductCode)) // 确保有产品代码
-                    .OrderBy(product => product.Name) // 按名称排序
+                var items = installedProducts
+                    .Where(product => !string.IsNullOrEmpty(product.ProductCode))
+                    .OrderBy(product => product.Name)
                     .Select(product =>
                     {
-                        // 获取产品图标，优先使用产品自带的图标
-                        var icon = Icons.GetIconForProductInfo(product);
+                        // Get the appropriate icon for each JetBrains product
+                        var icon = IconHelper.GetIconForProductInfo(product);
 
+                        // Create a list item that navigates to a product-specific page
                         return new ListItem(new JetBrainsProductPage(
                             product.Name,
                             product.Name,
@@ -40,18 +57,18 @@ public sealed class JetBrainsTopLevelPage : JetBrainsAllProductPage
                             icon));
                     })
                     .ToArray();
+                return items.ToArray<IListItem>();
             }
             else
-            {
-                return
-                [
-                    new ListItem(new NoOpCommand()) { Title = "Please settings Tool install location" }
-                ];
+            { 
+                // No JetBrains products found - show configuration message
+                return [
+                   new ListItem(new NoOpCommand()) { Title = "Please settings Tool install location" }
+               ];
             }
         }
-        else
-        {
-            return base.GetItems();
-        }
+        
+        // Product archive mode is disabled - show all recent projects directly
+        return base.GetItems();
     }
 }

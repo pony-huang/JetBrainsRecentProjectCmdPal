@@ -1,4 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
     <resheader name="resmimetype">
         <value>text/microsoft-resx</value>
     </resheader>
@@ -13,20 +19,8 @@
     </resheader>
     
     <!-- 设置相关资源 -->
-    <data name="settings_display_project_name" xml:space="preserve">
-        <value>显示项目名称</value>
-    </data>
-    <data name="settings_display_last_time" xml:space="preserve">
-        <value>显示最后打开时间</value>
-    </data>
-    <data name="settings_custom_vmoptions" xml:space="preserve">
-        <value>自定义 VM 选项</value>
-    </data>
-    <data name="settings_shell_script_location" xml:space="preserve">
-        <value>Shell 脚本位置</value>
-    </data>
     <data name="settings_tools_install_location" xml:space="preserve">
-        <value>JetBrains 工具安装位置</value>
+        <value>JetBrains工具安装位置</value>
     </data>
     <data name="settings_systemconfiglogs_directory" xml:space="preserve">
         <value>系统配置和日志目录</value>
@@ -37,10 +31,13 @@
     
     <!-- 命令消息 -->
     <data name="msg_run_as" xml:space="preserve">
-        <value>普通用户运行</value>
+        <value>运行</value>
     </data>
     <data name="msg_run_as_administrator" xml:space="preserve">
         <value>以管理员身份运行</value>
+    </data>
+    <data name="msg_open_in_explorer" xml:space="preserve">
+        <value>在文件管理器中打开</value>
     </data>
     
     <!-- 复制路径相关资源 -->
@@ -48,7 +45,7 @@
         <value>复制路径</value>
     </data>
     <data name="copy_path_ok" xml:space="preserve">
-        <value>路径已复制到剪贴板。</value>
+        <value>路径已复制到剪贴板</value>
     </data>
     <data name="clipboard_failed" xml:space="preserve">
         <value>无法设置剪贴板内容，可能被其他程序占用</value>
@@ -69,7 +66,56 @@
     <data name="run_admin_exception" xml:space="preserve">
         <value>无法以管理员身份执行</value>
     </data>
+    <data name="open_explorer_exception" xml:space="preserve">
+        <value>无法在文件管理器中打开</value>
+    </data>
     <data name="settings_jetbrains_product_archive" xml:space="preserve">
-        <value>工具分组</value>
+        <value>项目按工具分组</value>
+    </data>
+    
+    <!-- JetBrains 产品页面 -->
+    <data name="search_recent_projects_placeholder" xml:space="preserve">
+        <value>搜索 {0}</value>
+    </data>
+    <data name="project_path_label" xml:space="preserve">
+        <value>项目路径</value>
+    </data>
+    
+    <!-- 项目详情 -->
+    <data name="product_code_label" xml:space="preserve">
+        <value>工具Code</value>
+    </data>
+    <data name="project_status_label" xml:space="preserve">
+        <value>最近项目</value>
+    </data>
+    <data name="project_status_opened" xml:space="preserve">
+        <value>最近打开</value>
+    </data>
+    <data name="project_status_closed" xml:space="preserve">
+        <value>无</value>
+    </data>
+    <data name="lasted_open_time_label" xml:space="preserve">
+        <value>最后打开时间</value>
+    </data>
+    <data name="open_time_label" xml:space="preserve">
+        <value>打开时间</value>
+    </data>
+    <data name="build_label" xml:space="preserve">
+        <value>构建版本</value>
+    </data>
+    <data name="project_workspace_id_label" xml:space="preserve">
+        <value>项目工作区ID</value>
+    </data>
+    <data name="alarm_label" xml:space="preserve">
+        <value>警告</value>
+    </data>
+    <data name="project_not_found" xml:space="preserve">
+        <value>项目未找到</value>
+    </data>
+    <data name="settings_custom_options" xml:space="preserve">
+        <value>自定义选项</value>
+    </data>
+    <data name="settings_custom_options_description" xml:space="preserve">
+        <value>启用工具安装位置和系统配置日志目录的自定义配置</value>
     </data>
 </root>

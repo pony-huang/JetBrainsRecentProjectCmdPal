@@ -7,317 +7,387 @@ using System.Threading;
 using Windows.System;
 using JetBrainsRecentProjectCmdPal.Commands;
 using JetBrainsRecentProjectCmdPal.Helper;
+using JetBrainsRecentProjectCmdPal.Models;
 using JetBrainsRecentProjectCmdPal.Properties;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
-namespace JetBrainsRecentProjectCmdPal.Pages;
-
-public abstract class BaseJetBrainsPage : DynamicListPage, IDisposable, IFallbackHandler
+namespace JetBrainsRecentProjectCmdPal.Pages
 {
-    protected readonly List<IListItem> _results = [];
-    protected readonly Lock _lock = new();
-    protected CancellationTokenSource _cts = new();
-
-    protected BaseJetBrainsPage()
+    /// <summary>
+    /// Abstract base class for JetBrains project pages that provides common functionality
+    /// for displaying and managing recent JetBrains projects in the command palette.
+    /// Implements dynamic list functionality with search, filtering, and project management capabilities.
+    /// </summary>
+    public abstract class BaseJetBrainsPage : DynamicListPage, IDisposable, IFallbackHandler
     {
-        ShowDetails = true;
-    }
+        /// <summary>
+        /// Collection of list items representing filtered and processed recent projects
+        /// </summary>
+        private readonly List<IListItem> _results = [];
+        
+        /// <summary>
+        /// Thread synchronization lock for safe concurrent access to shared resources
+        /// </summary>
+        private readonly Lock _lock = new();
+        
+        /// <summary>
+        /// Cancellation token source for managing async operations and search cancellation
+        /// </summary>
+        private CancellationTokenSource _cts = new();
 
-    public override void UpdateSearchText(string oldSearch, string newSearch)
-    {
-        UpdateQuery(newSearch);
-    }
+        /// <summary>
+        /// Initializes a new instance of the BaseJetBrainsPage class
+        /// and enables detailed view for project information
+        /// </summary>
+        protected BaseJetBrainsPage()
+        {
+            ShowDetails = true;
+        }
 
-    public override IListItem[] GetItems() => [.. _results];
+        /// <summary>
+        /// Handles search text updates by triggering a new query with the updated search term
+        /// </summary>
+        /// <param name="oldSearch">The previous search text</param>
+        /// <param name="newSearch">The new search text to apply</param>
+        public override void UpdateSearchText(string oldSearch, string newSearch)
+        {
+            UpdateQuery(newSearch);
+        }
 
-    public void Dispose()
-    {
-        _cts.Cancel();
-        GC.SuppressFinalize(this);
-    }
+        /// <summary>
+        /// Returns the current collection of filtered and processed list items
+        /// </summary>
+        /// <returns>Array of IListItem representing the current search results</returns>
+        public override IListItem[] GetItems() => [.. _results];
 
-    public void UpdateQuery(string query)
-    {
-        IsLoading = true;
-        CancellationTokenSource cts;
-        lock (_lock)
+        /// <summary>
+        /// Disposes resources and cancels any ongoing operations
+        /// </summary>
+        public void Dispose()
         {
             _cts.Cancel();
-            _cts = new();
-            cts = _cts;
+            GC.SuppressFinalize(this);
         }
 
-        try
+        /// <summary>
+        /// Updates the search query and refreshes the project list with filtered results.
+        /// This method performs the complete search pipeline: retrieval, filtering, sorting, and UI creation.
+        /// </summary>
+        /// <param name="query">The search query string to filter projects</param>
+        public void UpdateQuery(string query)
         {
-            _results.Clear();
+            IsLoading = true;
+            CancellationTokenSource cts;
+            
+            // Thread-safe cancellation token management
+            lock (_lock)
+            {
+                _cts.Cancel();
+                _cts = new();
+                cts = _cts;
+            }
 
-            // 1. 获取所有最近项目
-            var allProjects = Query.SearchRecentProjectsBySettings();
+            try
+            {
+                _results.Clear();
 
-            if (cts.IsCancellationRequested)
-                return;
+                // Step 1: Retrieve all recent projects from JetBrains settings
+                var allProjects = Search.SearchRecentProjectsBySettings();
+                if (cts.IsCancellationRequested) return;
 
-            // 2. 应用产品代码过滤（子类实现）
-            var filteredByProduct = FilterByProduct(allProjects);
+                // Step 2: Apply product-specific filtering (implemented by derived classes)
+                var filteredByProduct = FilterByProduct(allProjects);
+                if (cts.IsCancellationRequested) return;
 
-            if (cts.IsCancellationRequested)
-                return;
+                // Step 3: Apply search query filtering
+                var finalProjects = FilterByQuery(filteredByProduct, query);
+                if (cts.IsCancellationRequested) return;
 
-            // 3. 根据query参数过滤项目名称（如果query不为空）
-            var finalProjects = string.IsNullOrWhiteSpace(query)
-                ? filteredByProduct
-                : filteredByProduct.Where(project =>
-                        project.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                        project.FrameTitle.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                        project.Key.Contains(query, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                // Step 4: Sort projects by relevance and recency
+                finalProjects = SortProjects(finalProjects);
 
-            if (cts.IsCancellationRequested)
-                return;
+                // Step 5: Convert projects to UI list items
+                var installedProducts = Search.GetInstalledProducts();
+                var installedProductsDict = installedProducts.ToDictionary(p => p.ProductCode, p => p);
+                
+                foreach (var project in finalProjects)
+                {
+                    if (cts.IsCancellationRequested) return;
+                    _results.Add(CreateListItemFromProject(project, installedProductsDict));
+                }
 
-            // 4. 按最近使用时间排序
-            finalProjects = finalProjects
-                .OrderByDescending(p => Math.Max(p.ActivationTimestamp, p.ProjectOpenTimestamp))
+                IsLoading = false;
+                RaiseItemsChanged(_results.Count);
+            }
+            catch (Exception)
+            {
+                // Ensure loading state is cleared even on exceptions
+                IsLoading = false;
+                RaiseItemsChanged(_results.Count);
+            }
+        }
+
+        /// <summary>
+        /// Abstract method for product-specific filtering logic.
+        /// Derived classes must implement this to filter projects by their specific product criteria.
+        /// </summary>
+        /// <param name="allProjects">Complete list of recent projects to filter</param>
+        /// <returns>Filtered list of projects matching the product criteria</returns>
+        protected abstract List<RecentProject> FilterByProduct(List<RecentProject> allProjects);
+
+        /// <summary>
+        /// Filters projects based on the search query by matching against project name,
+        /// frame title, and project key (path) using case-insensitive comparison.
+        /// </summary>
+        /// <param name="projects">List of projects to filter</param>
+        /// <param name="query">Search query string</param>
+        /// <returns>Filtered list of projects matching the search criteria</returns>
+        private List<RecentProject> FilterByQuery(List<RecentProject> projects, string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return projects;
+
+            return projects.Where(project =>
+                project.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                project.FrameTitle.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                project.Key.Contains(query, StringComparison.OrdinalIgnoreCase))
                 .ToList();
+        }
 
-            // 5. 创建IListItem实例
-            foreach (var project in finalProjects)
+        /// <summary>
+        /// Sorts projects by priority: currently opened projects first,
+        /// then by most recent activity (activation or opening timestamp).
+        /// </summary>
+        /// <param name="projects">List of projects to sort</param>
+        /// <returns>Sorted list of projects</returns>
+        private List<RecentProject> SortProjects(List<RecentProject> projects)
+        {
+            return projects
+                .OrderByDescending(p => p.IsOpened)
+                .ThenByDescending(p => Math.Max(p.ActivationTimestamp, p.ProjectOpenTimestamp))
+                .ToList();
+        }
+
+        /// <summary>
+        /// Creates a command palette list item from a recent project with appropriate
+        /// commands, icons, and detailed information display.
+        /// </summary>
+        /// <param name="project">The recent project to convert</param>
+        /// <param name="installedProductsDict">Dictionary of installed JetBrains products for icon resolution</param>
+        /// <returns>Configured IListItem for display in the command palette</returns>
+        private IListItem CreateListItemFromProject(RecentProject project, Dictionary<string, ProductInfo> installedProductsDict)
+        {
+            string shell = Search.GetProductBinBySettings(project.ProductionCode);
+            var arg = $"\"{project.Key}\"";
+
+            // Create primary command based on administrator settings
+            InvokableCommand primaryCommand = Search.Settings.RunAsAdministrator
+                ? new RunAsAsAdminCommand(shell, arg)
+                : new RunAsCommand(shell, arg);
+
+            var productInfo = installedProductsDict.GetValueOrDefault(project.ProductionCode);
+
+            return new ListItem(primaryCommand)
             {
-                if (cts.IsCancellationRequested)
-                    return;
+                Title = project.Name ?? string.Empty,
+                Subtitle = project.Key ?? string.Empty,
+                Icon = IconHelper.GetIconForProductInfo(productInfo),
+                Details = CreateProjectDetails(project, productInfo),
+                MoreCommands = CreateMoreCommand(project),
+            };
+        }
 
-                _results.Add(CreateListItemFromProject(project));
+        /// <summary>
+        /// Creates context menu commands for a project including copy path, open in explorer,
+        /// and alternative run commands with keyboard shortcuts.
+        /// </summary>
+        /// <param name="project">The project to create commands for</param>
+        /// <returns>Array of context menu items with associated keyboard shortcuts</returns>
+        private static IContextItem[] CreateMoreCommand(RecentProject project)
+        {
+            if (string.IsNullOrEmpty(project.Key))
+            {
+                return [];
             }
 
-            IsLoading = false;
-            RaiseItemsChanged(_results.Count);
-        }
-        catch (Exception)
-        {
-            IsLoading = false;
-            RaiseItemsChanged(_results.Count);
-        }
-    }
+            var projectPath = project.Key;
+            var quotedPath = $"\"{projectPath}\"";
+            var shell = Search.GetProductBinBySettings(project.ProductionCode);
+            
+            // For .sln files, open the containing directory in explorer
+            var explorerOpenPath = projectPath.EndsWith(".sln", StringComparison.OrdinalIgnoreCase) 
+                ? Path.GetDirectoryName(projectPath) ?? projectPath
+                : projectPath;
+            var quotedExplorerPath = $"\"{explorerOpenPath}\"";
 
-    /// <summary>
-    /// 子类实现此方法来过滤特定产品的项目
-    /// </summary>
-    /// <param name="allProjects">所有项目</param>
-    /// <returns>过滤后的项目列表</returns>
-    protected abstract List<RecentProject> FilterByProduct(List<RecentProject> allProjects);
+            // Define keyboard shortcuts for context commands
+            var copyShortcut = KeyChordHelpers.FromModifiers(true, true, false, false, (int)VirtualKey.C, 0);
+            var explorerShortcut = KeyChordHelpers.FromModifiers(true, true, false, false, (int)VirtualKey.E, 0);
+            var runShortcut = KeyChordHelpers.FromModifiers(false, true, false, false, (int)VirtualKey.Enter, 0);
 
-    /// <summary>
-    /// 子类实现此方法来获取项目图标
-    /// </summary>
-    /// <param name="project">项目信息</param>
-    /// <returns>项目图标</returns>
-    protected abstract IconInfo GetProjectIcon(RecentProject project);
-
-    protected IListItem CreateListItemFromProject(RecentProject project)
-    {
-        string shell = Query.GetShellBySettings(project.ProductionCode);
-
-        InvokableCommand primaryCommand;
-        var arg = $"\"{project.Key}\"";
-
-        if (shell == null)
-        {
-            primaryCommand = new NoOpCommand();
-        }
-        else if (Query.Settings.RunAsAdministrator)
-        {
-            primaryCommand = new RunAsAsAdminCommand(shell, arg);
-        }
-        else
-        {
-            primaryCommand = new RunAsCommand(shell, arg);
-        }
-
-        var listItem = new ListItem(primaryCommand)
-        {
-            Title = project.Name ?? string.Empty,
-            Subtitle = project.Key ?? string.Empty,
-            Icon = GetProjectIcon(project),
-            Details = CreateProjectDetails(project),
-            MoreCommands = CreateMoreCommand(project),
-        };
-
-        return listItem;
-    }
-
-    protected static IContextItem[] CreateMoreCommand(RecentProject project)
-    {
-        var fullPath = $"\"{project.Key}\"";
-        var shell = Query.GetShellBySettings(project.ProductionCode);
-        var moreCommands = new List<IContextItem>
-        {
-            new CommandContextItem(new CopyPathCommand(fullPath))
+            var moreCommands = new IContextItem[]
             {
-                RequestedShortcut = KeyChordHelpers.FromModifiers(true, true, false, false, (int)VirtualKey.C, 0)
-            },
-        };
-        if (Query.Settings.RunAsAdministrator)
-        {
-            moreCommands.Add(new CommandContextItem(new RunAsCommand(shell, fullPath))
-            {
-                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, false, false, (int)VirtualKey.Enter, 0)
-            });
+                // Copy project path to clipboard (Ctrl+Shift+C)
+                new CommandContextItem(new CopyPathCommand(projectPath))
+                {
+                    RequestedShortcut = copyShortcut
+                },
+                // Open project location in Windows Explorer (Ctrl+Shift+E)
+                new CommandContextItem(new OpenExplorerCommand(quotedExplorerPath))
+                {
+                    RequestedShortcut = explorerShortcut
+                },
+                // Alternative run command with opposite admin privilege (Alt+Enter)
+                new CommandContextItem(Search.Settings.RunAsAdministrator 
+                    ? new RunAsCommand(shell, quotedPath)
+                    : new RunAsAsAdminCommand(shell, quotedPath))
+                {
+                    RequestedShortcut = runShortcut
+                }
+            };
+
+            return moreCommands;
         }
-        else
+
+        /// <summary>
+        /// Creates detailed project information display including path, status, timestamps,
+        /// build information, and existence validation.
+        /// </summary>
+        /// <param name="project">The project to create details for</param>
+        /// <param name="productInfo">Associated JetBrains product information</param>
+        /// <returns>Details object containing formatted project metadata</returns>
+        private Details CreateProjectDetails(RecentProject project, ProductInfo productInfo)
         {
-            moreCommands.Add(new CommandContextItem(new RunAsAsAdminCommand(shell, fullPath))
-            {
-                RequestedShortcut = KeyChordHelpers.FromModifiers(false, true, false, false, (int)VirtualKey.Enter, 0)
-            });
-        }
+            var metadata = new List<IDetailsElement>();
 
-        return moreCommands.ToArray();
-    }
-
-    protected Details CreateProjectDetails(RecentProject project)
-    {
-        var metadata = new List<IDetailsElement>();
-
-        // Project Location
-        metadata.Add(new DetailsElement
-        {
-            Key = Resources.project_path_label,
-            Data = new DetailsLink
-            {
-                Text = project.Key
-            }
-        });
-
-        // -----
-        metadata.Add(new DetailsElement
-        {
-            Data = new DetailsSeparator()
-        });
-
-        // JetBrains Product
-        if (!string.IsNullOrEmpty(project.ProductionCode))
-        {
+            // Display project location/path
             metadata.Add(new DetailsElement
             {
-                Key = "Product Code",
+                Key = Resources.project_path_label,
+                Data = new DetailsLink { Text = project.Key }
+            });
+
+            metadata.Add(new DetailsElement { Data = new DetailsSeparator() });
+
+            // Note: Product code display is commented out but preserved for potential future use
+            // JetBrains Product
+            // if (!string.IsNullOrEmpty(project.ProductionCode))
+            // {
+            //     metadata.Add(new DetailsElement
+            //     {
+            //         Key = Resources.product_code_label,
+            //         Data = new DetailsTags
+            //         {
+            //             Tags = [new Tag(project.ProductionCode)
+            //             {
+            //                 Foreground = ColorHelpers.FromRgb(51, 51, 51),
+            //                 Background = ColorHelpers.FromRgb(224, 204, 179)
+            //             }]
+            //         }
+            //     });
+            // }
+
+            // Display project status (opened/closed) with color-coded tags
+            metadata.Add(new DetailsElement
+            {
+                Key = Resources.project_status_label,
                 Data = new DetailsTags
                 {
-                    Tags =
-                    [
-                        new Tag(project.ProductionCode)
-                        {
-                            Foreground = ColorHelpers.FromRgb(51, 51, 51),
-                            Background = ColorHelpers.FromRgb(224, 204, 179)
-                        }
-                    ]
-                }
-            });
-        }
-
-        // 项目状态
-        metadata.Add(new DetailsElement
-        {
-            Key = "Project Status",
-            Data = new DetailsTags
-            {
-                Tags =
-                [
-                    new Tag(project.IsOpened ? "Opened" : "Closed")
+                    Tags = [new Tag(project.IsOpened ? Resources.project_status_opened : Resources.project_status_closed)
                     {
                         Foreground = ColorHelpers.FromRgb(255, 255, 255),
                         Background = project.IsOpened
-                            ? ColorHelpers.FromRgb(76, 175, 80) // 绿色
-                            : ColorHelpers.FromRgb(158, 158, 158) // 灰色
-                    }
-                ]
+                            ? ColorHelpers.FromRgb(76, 175, 80)  // Green for opened
+                            : ColorHelpers.FromRgb(158, 158, 158) // Gray for closed
+                    }]
+                }
+            });
+
+            // Add timestamp information (last opened, project opened)
+            AddTimestampDetails(metadata, project);
+
+            // Display build information if available
+            if (!string.IsNullOrEmpty(project.Build))
+            {
+                metadata.Add(new DetailsElement
+                {
+                    Key = Resources.build_label,
+                    Data = new DetailsLink { Text = project.Build }
+                });
             }
-        });
 
-        // ActivationTimestamp
-        if (project.ActivationTimestamp > 0)
-        {
-            var activationTime = DateTimeOffset.FromUnixTimeMilliseconds(project.ActivationTimestamp);
-            metadata.Add(new DetailsElement
+            // Display workspace ID if available
+            if (!string.IsNullOrEmpty(project.ProjectWorkspaceId))
             {
-                Key = "Lasted Open Time",
-                Data = new DetailsLink
+                metadata.Add(new DetailsElement
                 {
-                    Text = activationTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture)
-                }
-            });
-        }
+                    Key = Resources.project_workspace_id_label,
+                    Data = new DetailsLink { Text = project.ProjectWorkspaceId }
+                });
+            }
 
-        // ProjectOpenTimestamp
-        if (project.ProjectOpenTimestamp > 0)
-        {
-            var openTime = DateTimeOffset.FromUnixTimeMilliseconds(project.ProjectOpenTimestamp);
-            metadata.Add(new DetailsElement
+            // Validate project existence and show warning if not found
+            var projectExists = Directory.Exists(project.Key) || File.Exists(project.Key);
+            if (!projectExists)
             {
-                Key = "Open Time",
-                Data = new DetailsLink
+                metadata.Add(new DetailsElement { Data = new DetailsSeparator() });
+                metadata.Add(new DetailsElement
                 {
-                    Text = openTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture)
-                }
-            });
-        }
-
-        // Build
-        if (!string.IsNullOrEmpty(project.Build))
-        {
-            metadata.Add(new DetailsElement
-            {
-                Key = "Build",
-                Data = new DetailsLink
-                {
-                    Text = project.Build
-                }
-            });
-        }
-
-        // Project WorkspaceId
-        if (!string.IsNullOrEmpty(project.ProjectWorkspaceId))
-        {
-            metadata.Add(new DetailsElement
-            {
-                Key = "Project WorkspaceId",
-                Data = new DetailsLink
-                {
-                    Text = project.ProjectWorkspaceId
-                }
-            });
-        }
-
-        // Project Exists
-        var projectExists = Directory.Exists(project.Key) || File.Exists(project.Key);
-        if (!projectExists)
-        {
-            metadata.Add(new DetailsElement
-            {
-                Data = new DetailsSeparator()
-            });
-
-            metadata.Add(new DetailsElement
-            {
-                Key = "Alarm",
-                Data = new DetailsTags
-                {
-                    Tags =
-                    [
-                        new Tag("Project Not Found")
+                    Key = Resources.alarm_label,
+                    Data = new DetailsTags
+                    {
+                        Tags = [new Tag(Resources.project_not_found)
                         {
                             Foreground = ColorHelpers.FromRgb(255, 255, 255),
-                            Background = ColorHelpers.FromRgb(244, 67, 54) // 红色
-                        }
-                    ]
-                }
-            });
+                            Background = ColorHelpers.FromRgb(244, 67, 54) // Red for error
+                        }]
+                    }
+                });
+            }
+
+            return new Details
+            {
+                HeroImage = IconHelper.GetIconForProductInfo(productInfo),
+                Metadata = metadata.ToArray()
+            };
         }
 
-        return new Details
+        /// <summary>
+        /// Adds timestamp details (activation time and project open time) to the metadata list
+        /// if the timestamps are available and valid.
+        /// </summary>
+        /// <param name="metadata">The metadata list to add timestamp details to</param>
+        /// <param name="project">The project containing timestamp information</param>
+        private void AddTimestampDetails(List<IDetailsElement> metadata, RecentProject project)
         {
-            HeroImage = GetProjectIcon(project),
-            Metadata = metadata.ToArray()
-        };
+            // Add last activation timestamp if available
+            if (project.ActivationTimestamp > 0)
+            {
+                var activationTime = DateTimeOffset.FromUnixTimeMilliseconds(project.ActivationTimestamp);
+                metadata.Add(new DetailsElement
+                {
+                    Key = Resources.lasted_open_time_label,
+                    Data = new DetailsLink
+                    {
+                        Text = activationTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture)
+                    }
+                });
+            }
+
+            // Add project open timestamp if available
+            if (project.ProjectOpenTimestamp > 0)
+            {
+                var openTime = DateTimeOffset.FromUnixTimeMilliseconds(project.ProjectOpenTimestamp);
+                metadata.Add(new DetailsElement
+                {
+                    Key = Resources.open_time_label,
+                    Data = new DetailsLink
+                    {
+                        Text = openTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture)
+                    }
+                });
+            }
+        }
     }
 }

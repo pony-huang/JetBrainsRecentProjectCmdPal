@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -9,15 +9,15 @@
   IgnorableNamespaces="uap uap3 rescap">
 
   <Identity
-    Name="Pony.JetBrainsRecentProjectCmdPal"
-    Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
-    Version="0.0.1.0" />
+    Name="PonyHuang.JetBrainsProjectsCmdPalExtension"
+    Publisher="CN=E5DFF638-D803-4DF8-B9C0-215550B100A3"
+    Version="1.0.0.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 
   <Properties>
-    <DisplayName>JetBrains Recent Projects For CmdPal</DisplayName>
-    <PublisherDisplayName>Pony</PublisherDisplayName>
+    <DisplayName>JetBrains Projects CmdPal Extension</DisplayName>
+    <PublisherDisplayName>Pony Huang</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -35,8 +35,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="CmdPal extension"
-        Description="JetBrains Recent Projects For CmdPal extension"
+        DisplayName="JetBrains Projects CmdPal Extension"
+        Description="Quick search and launch JetBrains projects for CmdPal"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
@@ -46,8 +46,8 @@
       <Extensions>
         <com:Extension Category="windows.comServer">
           <com:ComServer>
-            <com:ExeServer Executable="JetBrainsRecentProjectCmdPal.exe" Arguments="-RegisterProcessAsComServer" DisplayName="JetBrainsRecentProjectCmdPal">
-              <com:Class Id="ee6e6a97-7b1d-4bb1-b7c0-dec95989f912" DisplayName="JetBrainsRecentProjectCmdPal" />
+            <com:ExeServer Executable="JetBrainsRecentProjectCmdPal.exe" Arguments="-RegisterProcessAsComServer" DisplayName="JetBrains Projects CmdPal Extension">
+              <com:Class Id="ee6e6a97-7b1d-4bb1-b7c0-dec95989f912" DisplayName="JetBrains Projects CmdPal Extension" />
             </com:ExeServer>
           </com:ComServer>
         </com:Extension>
@@ -55,8 +55,8 @@
           <uap3:AppExtension Name="com.microsoft.commandpalette"
             Id="ID"
             PublicFolder="Public"
-            DisplayName="JetBrains Recent Projects For CmdPal"
-            Description="JetBrains Recent Projects For CmdPal">
+            DisplayName="JetBrains Projects CmdPal Extension"
+            Description="Quick search and launch JetBrains projects for CmdPal">
             <uap3:Properties>
               <CmdPalProvider>
                 <Activation>
@@ -74,7 +74,7 @@
   </Applications>
 
   <Capabilities>
-    <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />
   </Capabilities>
+
 </Package>
