@@ -278,40 +278,126 @@ public class RecentProjectsParserTests
     {
         return """
                <?xml version="1.0" encoding="UTF-8"?>
-               <application>
+                <application>
                  <component name="RecentProjectsManager">
                    <option name="additionalInfo">
                      <map>
-                       <entry key="C:\Projects\TestProject1">
+                       <entry key="E:/workplace/google-api-java-client-services">
                          <value>
-                           <RecentProjectMetaInfo>
-                             <option name="displayName" value="TestProject1" />
-                             <option name="frameTitle" value="TestProject1 - IntelliJ IDEA" />
+                           <RecentProjectMetaInfo frameTitle="google-api-java-client-services" projectWorkspaceId="31i9cKL58cODwaXfynFPMoiLSbf">
+                             <option name="activationTimestamp" value="1756005393019" />
+                             <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+                             <option name="build" value="IU-252.23892.409" />
+                             <option name="buildTimestamp" value="1754024820000" />
+                             <option name="colorInfo">
+                               <RecentProjectColorInfo associatedIndex="4" />
+                             </option>
+                             <frame x="580" y="196" width="1400" height="1000" />
                              <option name="productionCode" value="IU" />
-                             <option name="activationTimestamp" value="1640995200000" />
-                             <option name="projectOpenTimestamp" value="1640995200000" />
-                             <option name="build" value="IU-223.8617.56" />
-                             <option name="projectWorkspaceId" value="test-workspace-1" />
-                             <option name="opened" value="false" />
+                             <option name="projectOpenTimestamp" value="1755996103290" />
                            </RecentProjectMetaInfo>
                          </value>
                        </entry>
-                       <entry key="C:\Projects\TestProject2">
+                       <entry key="E:/workplace/amp">
                          <value>
-                           <RecentProjectMetaInfo>
-                             <option name="displayName" value="TestProject2" />
-                             <option name="frameTitle" value="TestProject2 - IntelliJ IDEA" />
+                           <RecentProjectMetaInfo frameTitle="amp – pom.xml (amp)" projectWorkspaceId="31iFBNxIa0QW4XqnU13D6gfcrVs">
+                             <option name="activationTimestamp" value="1755999607095" />
+                             <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+                             <option name="build" value="IU-252.23892.409" />
+                             <option name="buildTimestamp" value="1754024820000" />
+                             <option name="colorInfo">
+                               <RecentProjectColorInfo associatedIndex="6" />
+                             </option>
+                             <frame x="1117" y="226" width="1610" height="1000" />
                              <option name="productionCode" value="IU" />
-                             <option name="activationTimestamp" value="1640995300000" />
-                             <option name="projectOpenTimestamp" value="1640995300000" />
-                             <option name="build" value="IU-223.8617.56" />
-                             <option name="projectWorkspaceId" value="test-workspace-2" />
-                             <option name="opened" value="true" />
+                             <option name="projectOpenTimestamp" value="1755998850744" />
+                           </RecentProjectMetaInfo>
+                         </value>
+                       </entry>
+                       <entry key="E:/workplace/swagger-codegen">
+                         <value>
+                           <RecentProjectMetaInfo projectWorkspaceId="31iGmh0F5GXSK2nUkiBIS6pgA07">
+                             <option name="activationTimestamp" value="1758727823185" />
+                             <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+                             <option name="build" value="IU-252.23892.409" />
+                             <option name="buildTimestamp" value="1754024820000" />
+                             <option name="colorInfo">
+                               <RecentProjectColorInfo associatedIndex="7" />
+                             </option>
+                             <frame x="195" y="256" width="2236" height="1000" />
+                             <option name="productionCode" value="IU" />
+                             <option name="projectOpenTimestamp" value="1756000656093" />
+                           </RecentProjectMetaInfo>
+                         </value>
+                       </entry>
+                       <entry key="E:/workplace/android-management-api">
+                         <value>
+                           <RecentProjectMetaInfo frameTitle="android-management-api – E:\workplace\android-management-api\build\android-management-api\src\main\java\com\afwsamples\testdpc\model\Policy.java" projectWorkspaceId="31iCbNX7RglBOKT5zZPTzRsI0Wx">
+                             <option name="activationTimestamp" value="1756003026530" />
+                             <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+                             <option name="build" value="IU-252.23892.409" />
+                             <option name="buildTimestamp" value="1754024820000" />
+                             <option name="colorInfo">
+                               <RecentProjectColorInfo associatedIndex="5" />
+                             </option>
+                             <frame x="650" y="216" width="1400" height="1000" />
+                             <option name="productionCode" value="IU" />
+                             <option name="projectOpenTimestamp" value="1756000912146" />
+                           </RecentProjectMetaInfo>
+                         </value>
+                       </entry>
+                       <entry key="E:/Jetbrains/shell">
+                         <value>
+                           <RecentProjectMetaInfo frameTitle="shell" projectWorkspaceId="32zYFA4ekJBHnsOdjmvwOQrulXx">
+                             <option name="activationTimestamp" value="1758469389057" />
+                             <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+                             <option name="build" value="IU-252.23892.409" />
+                             <option name="buildTimestamp" value="1754024820000" />
+                             <option name="colorInfo">
+                               <RecentProjectColorInfo associatedIndex="8" />
+                             </option>
+                             <frame x="580" y="196" width="1400" height="1000" />
+                             <option name="productionCode" value="IU" />
+                             <option name="projectOpenTimestamp" value="1758469339854" />
+                           </RecentProjectMetaInfo>
+                         </value>
+                       </entry>
+                       <entry key="D:/WorkPlace/natproxy">
+                         <value>
+                           <RecentProjectMetaInfo frameTitle="natproxy" projectWorkspaceId="2OeO4DblbM89UfgXpHcfiqEagF4">
+                             <option name="activationTimestamp" value="1758558768082" />
+                             <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+                             <option name="build" value="IU-252.23892.409" />
+                             <option name="buildTimestamp" value="1754024820000" />
+                             <option name="colorInfo">
+                               <RecentProjectColorInfo associatedIndex="2" />
+                             </option>
+                             <frame x="580" y="196" width="1400" height="1000" />
+                             <option name="productionCode" value="IU" />
+                             <option name="projectOpenTimestamp" value="1758558770223" />
+                           </RecentProjectMetaInfo>
+                         </value>
+                       </entry>
+                       <entry key="D:/WorkPlace/ccecdict">
+                         <value>
+                           <RecentProjectMetaInfo frameTitle="ccecdict – gradle.properties [ccecdict]" opened="true" projectWorkspaceId="2SamIxXkJJex26rcfK73xq693Wz">
+                             <option name="activationTimestamp" value="1759296069006" />
+                             <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+                             <option name="build" value="IU-252.23892.409" />
+                             <option name="buildTimestamp" value="1754024820000" />
+                             <option name="colorInfo">
+                               <RecentProjectColorInfo associatedIndex="6" />
+                             </option>
+                             <frame x="435" y="259" width="1400" height="1000" />
+                             <option name="productionCode" value="IU" />
+                             <option name="projectOpenTimestamp" value="1758897481313" />
                            </RecentProjectMetaInfo>
                          </value>
                        </entry>
                      </map>
                    </option>
+                   <option name="lastOpenedProject" value="D:/WorkPlace/ccecdict" />
+                   <option name="lastProjectLocation" value="E:/workplace" />
                  </component>
                </application>
                """;

@@ -32,14 +32,14 @@ namespace JetBrainsRecentProjectCmdPal.Settings
         private readonly TextSetting _toolsInstallLocation = new(
             Namespaced(nameof(ToolsInstallLocation)),
             Resources.settings_tools_install_location,
-            "",
+            Resources.settings_tools_install_location,
             "");
 
 
         private readonly TextSetting _systemConfigLogslLocation = new(
             Namespaced(nameof(SystemConfigLogsLocation)),
             Resources.settings_systemconfiglogs_directory,
-            "",
+            Resources.settings_systemconfiglogs_directory,
             "");
 
         public bool RunAsAdministrator => _runAsAdministrator.Value;

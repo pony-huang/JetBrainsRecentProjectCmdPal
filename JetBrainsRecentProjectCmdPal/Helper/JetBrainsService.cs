@@ -1,9 +1,11 @@
+// using directives and namespace
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using JetBrainsRecentProjectCmdPal.Models;
+using JetBrainsRecentProjectCmdPal.Serialization;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JetBrainsRecentProjectCmdPal.Helper
@@ -27,7 +29,11 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// <summary>
         /// JSON serialization options with case-insensitive property names
         /// </summary>
-        private readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
+        private readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            TypeInfoResolver = AppJsonContext.Default
+        };
 
         /// <summary>
         /// Gets the list of installed product information for the specified installation location
@@ -141,12 +147,12 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// </summary>
         /// <param name="productDir">Product directory path</param>
         /// <returns>Product information object, returns null if loading fails</returns>
-        private ProductInfo LoadProductInfoFromDirectory(string productDir)
+        public ProductInfo LoadProductInfoFromDirectory(string productDir)
         {
             var productInfoPath = Path.Combine(productDir, "product-info.json");
             if (!File.Exists(productInfoPath))
                 return null!;
-
+        
             try
             {
                 var json = File.ReadAllText(productInfoPath);

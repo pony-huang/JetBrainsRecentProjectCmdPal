@@ -59,13 +59,10 @@ public sealed partial class JetBrainsTopLevelPage : JetBrainsAllProductPage
                     .ToArray();
                 return items.ToArray<IListItem>();
             }
-            else
-            { 
-                // No JetBrains products found - show configuration message
-                return [
-                   new ListItem(new NoOpCommand()) { Title = "Please settings Tool install location" }
-               ];
-            }
+            // No JetBrains products found
+            return [
+                new ListItem(new NoOpCommand()) { Title = "No JetBrains products found" }
+            ];
         }
         
         // Product archive mode is disabled - show all recent projects directly

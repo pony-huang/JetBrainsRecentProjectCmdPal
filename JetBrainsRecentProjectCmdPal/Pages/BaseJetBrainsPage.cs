@@ -126,6 +126,11 @@ namespace JetBrainsRecentProjectCmdPal.Pages
                 IsLoading = false;
                 RaiseItemsChanged(_results.Count);
             }
+            // if _result is empty
+            if (_results.Count == 0)
+            {
+                _results.Add( new ListItem(new NoOpCommand()) { Title = "No recent projects found" });
+            }
         }
 
         /// <summary>
