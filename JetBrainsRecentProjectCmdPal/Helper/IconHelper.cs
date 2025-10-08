@@ -6,7 +6,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
 {
     public static class IconHelper
     {
-        internal static IconInfo DefaultIconInfo { get; } = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+        internal static IconInfo DefaultIconInfo { get; } = IconHelpers.FromRelativePath("Assets\\Project.svg");
 
         public static IconInfo GetIconForProductInfo(ProductInfo productInfo)
         {

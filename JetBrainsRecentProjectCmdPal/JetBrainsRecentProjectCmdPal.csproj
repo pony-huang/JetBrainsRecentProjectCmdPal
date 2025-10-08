@@ -18,18 +18,19 @@
 
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-
-    <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
-
-    <DefaultLanguage>en-US</DefaultLanguage>
+    
+    <GenerateAppxPackageOnBuild Condition="'$(Configuration)'=='Release'">true</GenerateAppxPackageOnBuild>
+    <GenerateSatelliteAssembliesForCore Condition="'$(Configuration)'=='Release'">true</GenerateSatelliteAssembliesForCore>
   </PropertyGroup>
-
+  <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
+    <DefineConstants>ARM64</DefineConstants>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
@@ -78,49 +79,23 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PublishSingleFile>true</PublishSingleFile>
     <IsAotCompatible>true</IsAotCompatible>
-
     <CsWinRTAotOptimizerEnabled>true</CsWinRTAotOptimizerEnabled>
     <CsWinRTAotWarningLevel>2</CsWinRTAotWarningLevel>
     <!-- Suppress DynamicallyAccessedMemberTypes.PublicParameterlessConstructor in fallback code path of Windows SDK projection -->
-    <WarningsNotAsErrors>IL2081;$(WarningsNotAsErrors)</WarningsNotAsErrors>
-
-    <!-- When publishing trimmed, make sure to treat trimming warnings as build errors -->
-    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
-
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <!-- In Debug builds, trimming is disabled by default, but all the trim & 
-         AOT warnings are enabled. This gives debug builds a tighter inner loop,
-         while at least warning about future trim violations -->
-    <PublishTrimmed>false</PublishTrimmed>
-    
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
-    <EnableAotAnalyzer>true</EnableAotAnalyzer>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'!='Debug'">
-    <!-- In Release builds, trimming is enabled by default. 
-         feel free to disable this if needed -->
-    <PublishTrimmed>true</PublishTrimmed>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <WarningsNotAsErrors>IL2081;IL2104;IL2026;IL3050</WarningsNotAsErrors>
-    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishSingleFile>true</PublishSingleFile>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
-    <AppxBundle>Never</AppxBundle>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x64|arm64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <PackageCertificateThumbprint>62ADADDCF98409EFF63272A38F877415EAC73378</PackageCertificateThumbprint>
+    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
   </PropertyGroup>
-
-
 </Project>
