@@ -6,6 +6,8 @@
 
 JetBrains Recent Projects Command Palette Extension is a Windows Command Palette plugin that allows you to quickly search and launch your recent JetBrains IDE projects. This extension integrates seamlessly with Windows Command Palette, providing fast access to your development projects across all JetBrains IDEs.
 
+![Example.png](images/Example.png)
+
 ### Features
 
 - **🚀 Quick Project Access**: Instantly search and open recent projects from all JetBrains IDEs
@@ -22,62 +24,21 @@ JetBrains Recent Projects Command Palette Extension is a Windows Command Palette
   - DataGrip
   - And more...
 
-[//]: # (### Installation)
+### Installation
 
-[//]: # ()
-[//]: # (1. Download the latest release from the releases page)
+Choose one of the installation methods below:
 
-[//]: # (2. Install the `.msix` package)
+<details>
+<summary>Microsoft Store</summary>
+<p>
+  <a style="text-decoration:none" href="https://apps.microsoft.com/detail/9P7QFVGV9XZB">
+    <picture>
+      <source media="(prefers-color-scheme: light)" srcset="https://github.com/microsoft/PowerToys/blob/main/doc/images/readme/StoreBadge-dark.png?raw=true" width="148" />
+      <img src="https://github.com/microsoft/PowerToys/blob/main/doc/images/readme/StoreBadge-light.png?raw=true" width="148" />
+  </picture></a>
+</p>
+</details>
 
-[//]: # (3. The extension will automatically appear in your Windows Command Palette)
-
-[//]: # ()
-[//]: # (### Usage)
-
-[//]: # ()
-[//]: # (1. Open Windows Command Palette &#40;Win + R, then type "cmd" and press Enter, or use your preferred method&#41;)
-
-[//]: # (2. Type "JetBrains" to find the extension)
-
-[//]: # (3. Browse or search through your recent projects)
-
-[//]: # (4. Select a project to open it in the corresponding JetBrains IDE)
-
-[//]: # (5. Use context menu &#40;right-click or Ctrl+Shift+M&#41; for additional actions)
-
-[//]: # ()
-[//]: # (### Keyboard Shortcuts)
-
-[//]: # ()
-[//]: # (- **Enter**: Open project in IDE)
-
-[//]: # (- **Ctrl+Shift+C**: Copy project path to clipboard)
-
-[//]: # (- **Ctrl+Shift+E**: Open project location in Windows Explorer)
-
-[//]: # (- **Alt+Enter**: Toggle run as administrator mode)
-
-[//]: # ()
-[//]: # (### Settings)
-
-[//]: # ()
-[//]: # (The extension provides several configuration options:)
-
-[//]: # (- **Group projects by product**: Enable/disable categorized view by JetBrains product)
-
-[//]: # (- **Run as administrator**: Default privilege level for launching IDEs)
-
-[//]: # (- **Custom installation paths**: Configure custom JetBrains installation locations)
-
-[//]: # ()
-[//]: # (### Requirements)
-
-[//]: # ()
-[//]: # (- Windows 10/11)
-
-[//]: # (- Windows Command Palette)
-
-[//]: # (- One or more JetBrains IDEs installed)
 
 ### License
 
