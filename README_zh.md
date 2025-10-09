@@ -4,7 +4,7 @@
 
 ### 概述
 
-JetBrains 最近项目命令面板扩展是一个 Windows 命令面板插件，让您能够快速搜索和启动最近使用的 JetBrains IDE 项目。此扩展与 Windows 命令面板无缝集成，为您提供跨所有 JetBrains IDE 的开发项目快速访问。
+从 CmdPal 的命令面板中立即搜索并打开您最近的 JetBrains 项目。
 
 ![Example.png](images/Example.png)
 

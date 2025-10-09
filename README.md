@@ -1,17 +1,16 @@
-# JetBrains Recent Projects Command Palette Extension
+# Project QuickOpen for Command Palette
 
 [English](README.md) | [中文](README_zh.md)
  
 ### Overview
 
-JetBrains Recent Projects Command Palette Extension is a Windows Command Palette plugin that allows you to quickly search and launch your recent JetBrains IDE projects. This extension integrates seamlessly with Windows Command Palette, providing fast access to your development projects across all JetBrains IDEs.
+Instantly search and open your recent JetBrains projects from CmdPal’s command palette.
 
 ![Example.png](images/Example.png)
 
 ### Features
 
 - **🚀 Quick Project Access**: Instantly search and open recent projects from all JetBrains IDEs
-- **🔍 Smart Search**: Fast fuzzy search through project names and paths
 - **🎯 Multi-IDE Support**: Works with all JetBrains IDEs including:
   - IntelliJ IDEA
   - PyCharm
