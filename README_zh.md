@@ -1,4 +1,4 @@
-# JetBrains Recent Projects Command Palette Extension
+# Project QuickOpen for Command Palette
 
 [English](README.md) | [中文](README_zh.md)
 
