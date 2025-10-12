@@ -38,6 +38,9 @@
 </p>
 </details>
 
+### 自定义配置
+
+详见文档：[自定义路径配置](doc/CustomConfiguration_zh.md)
 
 ### 许可证
 

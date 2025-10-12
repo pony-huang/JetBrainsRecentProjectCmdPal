@@ -38,6 +38,9 @@ Choose one of the installation methods below:
 </p>
 </details>
 
+### Custom Configuration
+
+See docs: [Custom Path Configuration](doc/CustomConfiguration.md)
 
 ### License
 
