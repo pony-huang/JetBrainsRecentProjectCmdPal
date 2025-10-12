@@ -244,8 +244,8 @@ public class RecentProjectsParserTests
         var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
         var jetbrainsPath = Path.Combine(programFiles, "JetBrains");
         // Act
-        var jetBrainsService = new JetBrainsService();
-        var products = jetBrainsService.GetInstalledProducts(jetbrainsPath);
+        // var products = JetBrainsService.GetInstalledProducts(jetbrainsPath);
+        var products = JetBrainsService.GetInstalledProducts("E:\\Jetbrains");
         // Assert & Output
         _output.WriteLine($"集成测试结果: 找到 {products.Count} 个已安装产品");
         foreach (var product in products)

@@ -11,7 +11,6 @@ namespace JetBrainsRecentProjectCmdPal.Helper
 
         public static readonly SettingsManager Settings = new();
         
-        private static readonly JetBrainsService JetBrainsService = new();
 
         /// <summary>
         /// Gets the executable file path for the specified product based on settings

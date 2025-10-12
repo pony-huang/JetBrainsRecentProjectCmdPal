@@ -1,4 +1,3 @@
-// using directives and namespace
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,22 +13,22 @@ namespace JetBrainsRecentProjectCmdPal.Helper
     /// Unified management class for JetBrains services, integrating product information, icons, shell scripts and other functions
     /// Provides core functionality for product discovery, icon retrieval, executable file path lookup and recent project search
     /// </summary>
-    public class JetBrainsService
+    public static class JetBrainsService
     {
         /// <summary>
         /// Product information cache manager with 15-second cache duration
         /// </summary>
-        private readonly CacheManager<List<ProductInfo>> _productInfoCache = new(TimeSpan.FromSeconds(15));
+        private static readonly  CacheManager<List<ProductInfo>> ProductInfoCache = new(TimeSpan.FromSeconds(15));
         
         /// <summary>
         /// Icon path cache manager with 15-second cache duration
         /// </summary>
-        private readonly CacheManager<string> _iconPathCache = new(TimeSpan.FromSeconds(15));
+        private static readonly CacheManager<string> IconPathCache = new(TimeSpan.FromSeconds(15));
         
         /// <summary>
         /// JSON serialization options with case-insensitive property names
         /// </summary>
-        private readonly JsonSerializerOptions _jsonOptions = new()
+        private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true,
             TypeInfoResolver = AppJsonContext.Default
@@ -40,14 +39,14 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// </summary>
         /// <param name="installLocation">JetBrains product installation root directory</param>
         /// <returns>List of product information</returns>
-        public List<ProductInfo> GetInstalledProducts(string installLocation)
+        public static List<ProductInfo> GetInstalledProducts(string installLocation)
         {
             var cacheKey = $"all_products_{installLocation}";
-            if (_productInfoCache.TryGet(cacheKey, out var cachedProducts))
+            if (ProductInfoCache.TryGet(cacheKey, out var cachedProducts))
                 return cachedProducts;
             
             var products = LoadProductInfosFromDirectory(installLocation);
-            _productInfoCache.Set(cacheKey, products);
+            ProductInfoCache.Set(cacheKey, products);
             return products;
         }
 
@@ -57,7 +56,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// <param name="productCode">Product code (e.g., IU, PS, WS, etc.)</param>
         /// <param name="installLocation">Installation location</param>
         /// <returns>Matching product information, returns null if not found</returns>
-        public ProductInfo FindProductByCode(string productCode, string installLocation)
+        public static ProductInfo FindProductByCode(string productCode, string installLocation)
         {
             var products = GetInstalledProducts(installLocation);
             return products.FirstOrDefault(p =>
@@ -70,20 +69,20 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// <param name="productInfo">Product information object</param>
         /// <param name="installLocation">Installation location</param>
         /// <returns>Complete path of the icon file, returns empty string if not found</returns>
-        public string GetProductIconPath(ProductInfo productInfo, string installLocation)
+        public static string GetProductIconPath(ProductInfo productInfo, string installLocation)
         {
             if (string.IsNullOrEmpty(productInfo.SvgIconPath))
                 return "";
             
             var cacheKey = $"icon_{productInfo.ProductCode}";
 
-            if (_iconPathCache.TryGet(cacheKey, out var cachedPath))
+            if (IconPathCache.TryGet(cacheKey, out var cachedPath))
                 return cachedPath;
 
             var iconPath = FindIconPath(productInfo, installLocation);
             if (!string.IsNullOrEmpty(iconPath))
             {
-                _iconPathCache.Set(cacheKey, iconPath);
+                IconPathCache.Set(cacheKey, iconPath);
                 return iconPath;
             }
 
@@ -97,7 +96,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// <param name="productCode">Product code</param>
         /// <param name="installLocation">Installation location</param>
         /// <returns>Executable file path using forward slash separators</returns>
-        public string GetExecutablePath(string productCode, string installLocation)
+        public static string GetExecutablePath(string productCode, string installLocation)
         {
             var product = FindProductByCode(productCode, installLocation);
             var binaryPath = FindLauncherPath(product, installLocation);
@@ -115,7 +114,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// </summary>
         /// <param name="installLocation">Installation root directory</param>
         /// <returns>List of product information</returns>
-        private List<ProductInfo> LoadProductInfosFromDirectory(string installLocation)
+        private static List<ProductInfo> LoadProductInfosFromDirectory(string installLocation)
         {
             var products = new List<ProductInfo>();
 
@@ -147,23 +146,22 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// </summary>
         /// <param name="productDir">Product directory path</param>
         /// <returns>Product information object, returns null if loading fails</returns>
-        public ProductInfo LoadProductInfoFromDirectory(string productDir)
+        public static ProductInfo LoadProductInfoFromDirectory(string productDir)
         {
             var productInfoPath = Path.Combine(productDir, "product-info.json");
             if (!File.Exists(productInfoPath))
-                return null!;
+                return null;
         
             try
             {
                 var json = File.ReadAllText(productInfoPath);
-                var productInfo = JsonSerializer.Deserialize<ProductInfo>(json, _jsonOptions);
-                return (productInfo != null && !string.IsNullOrEmpty(productInfo.ProductCode) ? productInfo : null)!;
+                return JsonSerializer.Deserialize<ProductInfo>(json, JsonOptions)!;
             }
             catch (Exception ex)
             {
                 ExtensionHost.LogMessage($"JBCML: Error parsing product-info.json in {productDir}: {ex.Message}");
-                return null;
             }
+            return null;
         }
 
         /// <summary>
@@ -172,7 +170,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// <param name="productInfo">Product information</param>
         /// <param name="installLocation">Installation location</param>
         /// <returns>Complete path of the icon file</returns>
-        private string FindIconPath(ProductInfo productInfo, string installLocation)
+        private static string FindIconPath(ProductInfo productInfo, string installLocation)
         {
             try
             {
@@ -202,7 +200,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// <param name="dir">Directory path</param>
         /// <param name="productCode">Product code</param>
         /// <returns>Whether it matches</returns>
-        private bool IsMatchingProductDirectory(string dir, string productCode)
+        private static bool IsMatchingProductDirectory(string dir, string productCode)
         {
             var productInfoPath = Path.Combine(dir, "product-info.json");
             if (!File.Exists(productInfoPath)) return false;
@@ -210,7 +208,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
             try
             {
                 var json = File.ReadAllText(productInfoPath);
-                var info = JsonSerializer.Deserialize<ProductInfo>(json, _jsonOptions);
+                var info =  JsonSerializer.Deserialize<ProductInfo>(json, JsonOptions)!;
                 return string.Equals(info?.ProductCode, productCode, StringComparison.OrdinalIgnoreCase);
             }
             catch
@@ -225,7 +223,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         /// <param name="product">Product information</param>
         /// <param name="installLocation">Installation location</param>
         /// <returns>Complete path of the launcher file</returns>
-        private string FindLauncherPath(ProductInfo product, String installLocation)
+        private static string FindLauncherPath(ProductInfo product, String installLocation)
         {
             // Find Windows platform launch configuration
             var windowsLaunch = product.Launch?.FirstOrDefault(l =>

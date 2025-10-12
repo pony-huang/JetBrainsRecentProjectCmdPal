@@ -19,9 +19,8 @@ namespace JetBrainsRecentProjectCmdPal.Tests.Helper
         {
             // Arrange
             var tempDir = "E:\\Jetbrains\\IntelliJ IDEA Community Edition";
-            var service = new JetBrainsService();
             // Act
-            ProductInfo result = service.LoadProductInfoFromDirectory(tempDir);
+            ProductInfo result = JetBrainsService.LoadProductInfoFromDirectory(tempDir);
             _output.WriteLine($"ProductInfo: {result}");
         }
 

@@ -1,16 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using JetBrainsRecentProjectCmdPal.Helper;
+using JetBrainsRecentProjectCmdPal.Models;
 using JetBrainsRecentProjectCmdPal.Properties;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using System.Collections.Generic;
 
 namespace JetBrainsRecentProjectCmdPal.Pages;
 
-/// <summary>
-/// Top-level page that serves as the entry point for JetBrains recent projects functionality.
-/// Depending on settings, this page either shows all recent projects directly or provides
-/// a categorized view with separate pages for each installed JetBrains product.
-/// </summary>
 public sealed partial class JetBrainsTopLevelPage : JetBrainsAllProductPage
 {
     /// <summary>
@@ -50,22 +48,58 @@ public sealed partial class JetBrainsTopLevelPage : JetBrainsAllProductPage
                         var icon = IconHelper.GetIconForProductInfo(product);
 
                         // Create a list item that navigates to a product-specific page
-                        return new ListItem(new JetBrainsProductPage(
-                            product.Name,
-                            product.Name,
+                        var productName = GetProductName(product);
+                        var item = new ListItem(new JetBrainsProductPage(
+                            productName,
+                            productName,
                             product.ProductCode,
                             icon));
+
+                        item.Subtitle = product.Version;
+
+                        return item;
                     })
                     .ToArray();
                 return items.ToArray<IListItem>();
             }
+
             // No JetBrains products found
-            return [
+            return
+            [
                 new ListItem(new NoOpCommand()) { Title = "No JetBrains products found" }
             ];
         }
-        
+
         // Product archive mode is disabled - show all recent projects directly
         return base.GetItems();
+    }
+
+    private static readonly Dictionary<string, string> ProductCodeNameMap = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["IU"] = "IntelliJ IDEA Ultimate",
+        ["IC"] = "IntelliJ IDEA Community",
+        ["IE"] = "IntelliJ IDEA Educational",
+        ["PS"] = "PhpStorm",
+        ["WS"] = "WebStorm",
+        ["PY"] = "PyCharm Professional",
+        ["PC"] = "PyCharm Community",
+        ["PE"] = "PyCharm Educational",
+        ["RM"] = "RubyMine",
+        ["OC"] = "AppCode",
+        ["CL"] = "CLion",
+        ["GO"] = "GoLand",
+        ["DB"] = "DataGrip",
+        ["RD"] = "Rider",
+        ["AI"] = "Android Studio",
+        ["RR"] = "RustRover",
+        ["QA"] = "Aqua"
+    };
+
+    private static string GetProductName(ProductInfo product)
+    {
+        var code = product.ProductCode ?? product.Name;
+        if (ProductCodeNameMap.TryGetValue(code, out var name))
+            return name;
+        return string.IsNullOrWhiteSpace(product.Name) ? "Unknown" : product.Name;
     }
 }
