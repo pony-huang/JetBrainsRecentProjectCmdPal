@@ -25,16 +25,6 @@ namespace JetBrainsRecentProjectCmdPal.Pages
         /// Collection of list items representing filtered and processed recent projects
         /// </summary>
         private readonly List<IListItem> _results = [];
-        
-        /// <summary>
-        /// Thread synchronization lock for safe concurrent access to shared resources
-        /// </summary>
-        private readonly Lock _lock = new();
-        
-        /// <summary>
-        /// Cancellation token source for managing async operations and search cancellation
-        /// </summary>
-        private CancellationTokenSource _cts = new();
 
         /// <summary>
         /// Initializes a new instance of the BaseJetBrainsPage class
@@ -66,7 +56,6 @@ namespace JetBrainsRecentProjectCmdPal.Pages
         /// </summary>
         public void Dispose()
         {
-            _cts.Cancel();
             GC.SuppressFinalize(this);
         }
 
@@ -78,32 +67,19 @@ namespace JetBrainsRecentProjectCmdPal.Pages
         public void UpdateQuery(string query)
         {
             IsLoading = true;
-            CancellationTokenSource cts;
-            
-            // Thread-safe cancellation token management
-            lock (_lock)
-            {
-                _cts.Cancel();
-                _cts = new();
-                cts = _cts;
-            }
-
             try
             {
                 _results.Clear();
 
                 // Step 1: Retrieve all recent projects from JetBrains settings
                 var allProjects = Search.SearchRecentProjectsBySettings();
-                if (cts.IsCancellationRequested) return;
-
+                
                 // Step 2: Apply product-specific filtering (implemented by derived classes)
                 var filteredByProduct = FilterByProduct(allProjects);
-                if (cts.IsCancellationRequested) return;
-
+                
                 // Step 3: Apply search query filtering
                 var finalProjects = FilterByQuery(filteredByProduct, query);
-                if (cts.IsCancellationRequested) return;
-
+                
                 // Step 4: Sort projects by relevance and recency
                 finalProjects = SortProjects(finalProjects);
 
@@ -113,7 +89,6 @@ namespace JetBrainsRecentProjectCmdPal.Pages
                 
                 foreach (var project in finalProjects)
                 {
-                    if (cts.IsCancellationRequested) return;
                     _results.Add(CreateListItemFromProject(project, installedProductsDict));
                 }
 
