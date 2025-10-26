@@ -14,13 +14,9 @@
 - **🎯 多 IDE 支持**: 支持所有 JetBrains IDE，包括:
   - IntelliJ IDEA
   - PyCharm
-  - WebStorm
-  - PhpStorm
   - Rider
   - CLion
   - GoLand
-  - RubyMine
-  - DataGrip
   - 以及更多...
 
 ### 安装

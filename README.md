@@ -14,13 +14,9 @@ Instantly search and open your recent JetBrains projects from CmdPal’s command
 - **🎯 Multi-IDE Support**: Works with all JetBrains IDEs including:
   - IntelliJ IDEA
   - PyCharm
-  - WebStorm
-  - PhpStorm
   - Rider
   - CLion
   - GoLand
-  - RubyMine
-  - DataGrip
   - And more...
 
 ### Installation
