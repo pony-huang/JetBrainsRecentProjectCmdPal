@@ -4,11 +4,11 @@ using Xunit.Abstractions;
 
 namespace JetBrainsRecentProjectCmdPal.Tests.Helper
 {
-    public class JetBrainsServiceTests
+    public class JetBrainsHelperTests
     {
         private readonly ITestOutputHelper _output;
 
-        public JetBrainsServiceTests(ITestOutputHelper output)
+        public JetBrainsHelperTests(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -20,14 +20,14 @@ namespace JetBrainsRecentProjectCmdPal.Tests.Helper
             // Arrange
             var tempDir = "E:\\Jetbrains\\IntelliJ IDEA Community Edition";
             // Act
-            ProductInfo result = JetBrainsService.LoadProductInfoFromDirectory(tempDir);
+            ProductInfo result = JetBrainsHelper.LoadProductInfoFromDirectory(tempDir);
             _output.WriteLine($"ProductInfo: {result}");
         }
 
         [Fact]
         public void Test1()
         {
-            var result = JetBrainsService.SearchRecentProjects("E:\\AppData\\Jetbrains", true);
+            var result = JetBrainsHelper.SearchRecentProjects("E:\\AppData\\Jetbrains", true);
             foreach (var v in result)
             {
                 _output.WriteLine($"{v.Name}");

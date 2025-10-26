@@ -48,7 +48,7 @@ public sealed partial class JetBrainsTopLevelPage : JetBrainsAllProductPage
                         var icon = IconHelper.GetIconForProductInfo(product);
 
                         // Create a list item that navigates to a product-specific page
-                        var productName = GetProductName(product);
+                        var productName = JetBrainsHelper.GetProductName(product);
                         var item = new ListItem(new JetBrainsProductPage(
                             productName,
                             productName,
@@ -72,34 +72,5 @@ public sealed partial class JetBrainsTopLevelPage : JetBrainsAllProductPage
 
         // Product archive mode is disabled - show all recent projects directly
         return base.GetItems();
-    }
-
-    private static readonly Dictionary<string, string> ProductCodeNameMap = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["IU"] = "IntelliJ IDEA Ultimate",
-        ["IC"] = "IntelliJ IDEA Community",
-        ["IE"] = "IntelliJ IDEA Educational",
-        ["PS"] = "PhpStorm",
-        ["WS"] = "WebStorm",
-        ["PY"] = "PyCharm Professional",
-        ["PC"] = "PyCharm Community",
-        ["PE"] = "PyCharm Educational",
-        ["RM"] = "RubyMine",
-        ["OC"] = "AppCode",
-        ["CL"] = "CLion",
-        ["GO"] = "GoLand",
-        ["DB"] = "DataGrip",
-        ["RD"] = "Rider",
-        ["AI"] = "Android Studio",
-        ["RR"] = "RustRover",
-        ["QA"] = "Aqua"
-    };
-
-    private static string GetProductName(ProductInfo product)
-    {
-        var code = product.ProductCode ?? product.Name;
-        if (ProductCodeNameMap.TryGetValue(code, out var name))
-            return name;
-        return string.IsNullOrWhiteSpace(product.Name) ? "Unknown" : product.Name;
     }
 }

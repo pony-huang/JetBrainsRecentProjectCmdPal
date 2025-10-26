@@ -13,7 +13,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
     /// Unified management class for JetBrains services, integrating product information, icons, shell scripts and other functions
     /// Provides core functionality for product discovery, icon retrieval, executable file path lookup and recent project search
     /// </summary>
-    public static class JetBrainsService
+    public static class JetBrainsHelper
     {
         /// <summary>
         /// Product information cache manager with 15-second cache duration
@@ -316,6 +316,35 @@ namespace JetBrainsRecentProjectCmdPal.Helper
             bool isRider = productName.Contains("rider", StringComparison.CurrentCultureIgnoreCase);
             string fileName = isRider ? "recentSolutions.xml" : "recentProjects.xml";
             return Path.Combine(dir, "options", fileName);
+        }
+        
+        private static readonly Dictionary<string, string> ProductCodeNameMap = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["IU"] = "IntelliJ IDEA Ultimate",
+            ["IC"] = "IntelliJ IDEA Community",
+            ["IE"] = "IntelliJ IDEA Educational",
+            ["PS"] = "PhpStorm",
+            ["WS"] = "WebStorm",
+            ["PY"] = "PyCharm Professional",
+            ["PC"] = "PyCharm Community",
+            ["PE"] = "PyCharm Educational",
+            ["RM"] = "RubyMine",
+            ["OC"] = "AppCode",
+            ["CL"] = "CLion",
+            ["GO"] = "GoLand",
+            ["DB"] = "DataGrip",
+            ["RD"] = "Rider",
+            ["AI"] = "Android Studio",
+            ["RR"] = "RustRover",
+            ["QA"] = "Aqua"
+        };
+
+        public static string GetProductName(ProductInfo product)
+        {
+            var code = product.ProductCode ?? product.Name;
+            if (ProductCodeNameMap.TryGetValue(code, out var name))
+                return name;
+            return string.IsNullOrWhiteSpace(product.Name) ? "Unknown" : product.Name;
         }
     }
 }

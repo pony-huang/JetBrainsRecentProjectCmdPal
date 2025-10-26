@@ -53,10 +53,10 @@
     
     <!-- JetBrains 产品归档页面 -->
     <data name="jetbrains_recent_projects_title" xml:space="preserve">
-        <value>JetBrains 最近项目</value>
+        <value>JetBrains 项目</value>
     </data>
     <data name="jetbrains_recent_projects_name" xml:space="preserve">
-        <value>JetBrains 最近项目</value>
+        <value>JetBrains 项目</value>
     </data>
     
     <!-- 异常消息 -->
@@ -117,5 +117,8 @@
     </data>
     <data name="settings_custom_options_description" xml:space="preserve">
         <value>启用工具安装位置和系统配置日志目录的自定义配置</value>
+    </data>
+    <data name="jetbrains_product_label" xml:space="preserve">
+        <value>产品</value>
     </data>
 </root>

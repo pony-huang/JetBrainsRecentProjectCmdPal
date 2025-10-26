@@ -22,7 +22,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         {
             foreach (var installLocation in GetInstalledProductPaths())
             {
-                var executablePath = JetBrainsService.GetExecutablePath(productCode, installLocation);
+                var executablePath = JetBrainsHelper.GetExecutablePath(productCode, installLocation);
                 if (!string.IsNullOrEmpty(executablePath))
                 {
                     return executablePath;
@@ -47,14 +47,14 @@ namespace JetBrainsRecentProjectCmdPal.Helper
                 var googleRoamingPath = Path.Combine(roamingPath, "Google");
                 
                 recentProjects.AddRange(
-                    JetBrainsService.SearchRecentProjects(jetbrainsRoamingPath, false));
+                    JetBrainsHelper.SearchRecentProjects(jetbrainsRoamingPath, false));
                 recentProjects.AddRange(
-                    JetBrainsService.SearchRecentProjects(googleRoamingPath, false));
+                    JetBrainsHelper.SearchRecentProjects(googleRoamingPath, false));
             }
             else
             {
                 recentProjects.AddRange(
-                    JetBrainsService.SearchRecentProjects(Settings.SystemConfigLogsLocation, true));
+                    JetBrainsHelper.SearchRecentProjects(Settings.SystemConfigLogsLocation, true));
             }
 
             return recentProjects;
@@ -70,7 +70,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
             
             foreach (var installLocation in GetInstalledProductPaths())
             {
-                allProductInfos.AddRange(JetBrainsService.GetInstalledProducts(installLocation));
+                allProductInfos.AddRange(JetBrainsHelper.GetInstalledProducts(installLocation));
             }
 
             return allProductInfos;
@@ -86,7 +86,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper
         {
             foreach (var installLocation in GetInstalledProductPaths())
             {
-                var productIconPath = JetBrainsService.GetProductIconPath(productInfo, installLocation);
+                var productIconPath = JetBrainsHelper.GetProductIconPath(productInfo, installLocation);
                 if (!string.IsNullOrEmpty(productIconPath))
                     return productIconPath;
             }

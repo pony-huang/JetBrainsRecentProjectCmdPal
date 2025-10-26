@@ -229,7 +229,7 @@ public class RecentProjectsParserTests
         var jetbrainsPath = Path.Combine(roamingPath, "JetBrains");
         _output.WriteLine($"尝试从路径解析项目: {jetbrainsPath}");
         // Act
-        var projects = JetBrainsService.SearchRecentProjects(jetbrainsPath, true);
+        var projects = JetBrainsHelper.SearchRecentProjects(jetbrainsPath, true);
         // Assert & Output
         _output.WriteLine($"集成测试结果: 找到 {projects.Count} 个项目");
         foreach (var project in projects.Take(5))
@@ -245,7 +245,7 @@ public class RecentProjectsParserTests
         var jetbrainsPath = Path.Combine(programFiles, "JetBrains");
         // Act
         // var products = JetBrainsService.GetInstalledProducts(jetbrainsPath);
-        var products = JetBrainsService.GetInstalledProducts("E:\\Jetbrains");
+        var products = JetBrainsHelper.GetInstalledProducts("E:\\Jetbrains");
         // Assert & Output
         _output.WriteLine($"集成测试结果: 找到 {products.Count} 个已安装产品");
         foreach (var product in products)

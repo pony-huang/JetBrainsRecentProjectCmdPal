@@ -118,4 +118,7 @@
     <data name="settings_custom_options_description" xml:space="preserve">
         <value>Enable custom configuration for tools installation location and system config logs directory</value>
     </data>
+    <data name="jetbrains_product_label" xml:space="preserve">
+        <value>Product</value>
+    </data>
 </root>

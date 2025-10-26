@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Windows.System;
 using JetBrainsRecentProjectCmdPal.Commands;
 using JetBrainsRecentProjectCmdPal.Helper;
@@ -240,7 +239,17 @@ namespace JetBrainsRecentProjectCmdPal.Pages
         private Details CreateProjectDetails(RecentProject project, ProductInfo productInfo)
         {
             var metadata = new List<IDetailsElement>();
-
+            
+            metadata.Add(new DetailsElement { Data = new DetailsSeparator() });
+            
+            // Jetbrains Product
+            metadata.Add(new DetailsElement
+            {
+                Key = Resources.jetbrains_product_label,
+                Data = new DetailsLink { Text = JetBrainsHelper.GetProductName(productInfo)}
+            });
+            
+            
             // Display project location/path
             metadata.Add(new DetailsElement
             {
@@ -248,7 +257,6 @@ namespace JetBrainsRecentProjectCmdPal.Pages
                 Data = new DetailsLink { Text = project.Key }
             });
 
-            metadata.Add(new DetailsElement { Data = new DetailsSeparator() });
 
             // Note: Product code display is commented out but preserved for potential future use
             // JetBrains Product
