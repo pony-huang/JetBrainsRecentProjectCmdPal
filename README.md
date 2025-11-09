@@ -11,13 +11,6 @@ Instantly search and open your recent JetBrains projects from CmdPal’s command
 ### Features
 
 - **🚀 Quick Project Access**: Instantly search and open recent projects from all JetBrains IDEs
-- **🎯 Multi-IDE Support**: Works with all JetBrains IDEs including:
-  - IntelliJ IDEA
-  - PyCharm
-  - Rider
-  - CLion
-  - GoLand
-  - And more...
 
 ### Installation
 
@@ -29,7 +22,7 @@ Choose one of the installation methods below:
   <a style="text-decoration:none" href="https://apps.microsoft.com/detail/9P7QFVGV9XZB">
     <picture>
       <source media="(prefers-color-scheme: light)" srcset="https://github.com/microsoft/PowerToys/blob/main/doc/images/readme/StoreBadge-dark.png?raw=true" width="148" />
-      <img src="https://github.com/microsoft/PowerToys/blob/main/doc/images/readme/StoreBadge-light.png?raw=true" width="148" />
+      <img src="https://github.com/microsoft/PowerToys/blob/main/doc/images/readme/StoreBadge-light.png?raw=true" width="200" />
   </picture></a>
 </p>
 </details>
