@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -84,11 +85,23 @@ namespace JetBrainsRecentProjectCmdPal.Pages
 
                 // Step 5: Convert projects to UI list items
                 var installedProducts = Search.GetInstalledProducts();
-                var installedProductsDict = installedProducts.ToDictionary(p => p.ProductCode, p => p);
+                var installedProductsDict = installedProducts
+                    .GroupBy(p => p.ProductCode)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.OrderByDescending(p => p.BuildNumber)
+                            .ToDictionary(p => p.BuildNumber)
+                    );
+
+                // var installedProductsDict = installedProducts.ToDictionary(p => p.ProductCode, p => p);
                 
                 foreach (var project in finalProjects)
                 {
-                    _results.Add(CreateListItemFromProject(project, installedProductsDict));
+                    var listItem = CreateListItemFromProject(project, installedProductsDict);
+                    if (listItem != null)
+                    {
+                        _results.Add(listItem);
+                    }
                 }
 
                 IsLoading = false;
@@ -155,9 +168,32 @@ namespace JetBrainsRecentProjectCmdPal.Pages
         /// <param name="project">The recent project to convert</param>
         /// <param name="installedProductsDict">Dictionary of installed JetBrains products for icon resolution</param>
         /// <returns>Configured IListItem for display in the command palette</returns>
-        private IListItem CreateListItemFromProject(RecentProject project, Dictionary<string, ProductInfo> installedProductsDict)
+        [return: MaybeNull]
+        private ListItem CreateListItemFromProject(RecentProject project, Dictionary<string, Dictionary<string, ProductInfo>> installedProductsDict)
         {
-            string shell = Search.GetProductBinBySettings(project.ProductionCode);
+
+            var productInfos = installedProductsDict.GetValueOrDefault(project.ProductionCode);
+            if (productInfos == null || productInfos.Count == 0)
+            {
+                return null;
+            }
+
+            ProductInfo product = null;
+            foreach (var v in productInfos.Keys)
+            {
+                if (project.Build.Contains(v))
+                {
+                    product = productInfos[v];
+                }
+                
+            }
+            
+            if (product == null)
+            {
+                return null;
+            }
+            
+            string shell = product.ExecPath;
             var arg = $"\"{project.Key}\"";
 
             // Create primary command based on administrator settings
@@ -165,14 +201,12 @@ namespace JetBrainsRecentProjectCmdPal.Pages
                 ? new RunAsAsAdminCommand(shell, arg)
                 : new RunAsCommand(shell, arg);
 
-            var productInfo = installedProductsDict.GetValueOrDefault(project.ProductionCode);
-
             return new ListItem(primaryCommand)
             {
                 Title = project.Name ?? string.Empty,
                 Subtitle = project.Key ?? string.Empty,
-                Icon = IconHelper.GetIconForProductInfo(productInfo),
-                Details = CreateProjectDetails(project, productInfo),
+                Icon = IconHelper.GetIconForProductInfo(product),
+                Details = CreateProjectDetails(project, product),
                 MoreCommands = CreateMoreCommand(project),
             };
         }

@@ -14,6 +14,7 @@ namespace JetBrainsRecentProjectCmdPal.Models
         public string ProductVendor { get; set; } = "";
         public string MajorVersionReleaseDate { get; set; } = "";
         public LaunchInfo[] Launch { get; set; } = Array.Empty<LaunchInfo>();
+        public string ExecPath { get; set; } = "";
     }
 
     public class LaunchInfo

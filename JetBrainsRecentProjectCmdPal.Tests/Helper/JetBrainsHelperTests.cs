@@ -1,3 +1,4 @@
+using System.Text.Json;
 using JetBrainsRecentProjectCmdPal.Helper;
 using JetBrainsRecentProjectCmdPal.Models;
 using Xunit.Abstractions;
@@ -15,7 +16,7 @@ namespace JetBrainsRecentProjectCmdPal.Tests.Helper
 
 
         [Fact]
-        public void LoadProductInfoFromDirectory_WithValidJson_ReturnsProductInfo()
+        public void LoadProductInfoFromDirectoryTest()
         {
             // Arrange
             var tempDir = "E:\\Jetbrains\\IntelliJ IDEA Community Edition";
@@ -25,13 +26,17 @@ namespace JetBrainsRecentProjectCmdPal.Tests.Helper
         }
 
         [Fact]
-        public void Test1()
+        public void SearchRecentProjectsTest()
         {
             var result = JetBrainsHelper.SearchRecentProjects("E:\\AppData\\Jetbrains", true);
+            var options = new JsonSerializerOptions { WriteIndented = true };
             foreach (var v in result)
             {
-                _output.WriteLine($"{v.Name}");
-                _output.WriteLine($"{v.Key}");
+                // show json format pertty
+        
+                _output.WriteLine($"RecentProject: {JsonSerializer.Serialize(v, options)}");
+                // _output.WriteLine($"RecentProject: {JsonSerializer.Serialize(v)}");
+                _output.WriteLine("------------------------");
             }
         }
     }

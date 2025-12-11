@@ -129,6 +129,8 @@ namespace JetBrainsRecentProjectCmdPal.Helper
                     var productInfo = LoadProductInfoFromDirectory(productDir);
                     if (productInfo != null)
                     {
+                        var launchInfo = productInfo.Launch[0];
+                        productInfo.ExecPath = Path.Combine(productDir, launchInfo.LauncherPath).Replace("\\", "/");
                         products.Add(productInfo);
                     }
                 }
