@@ -34,7 +34,7 @@ public sealed partial class JetBrainsTopLevelPage : JetBrainsAllProductPage
         // Check if product archive mode is enabled (categorized view by product)
         if (Search.Settings.JetBrainsProductArchive)
         {
-            var installedProducts = Search.GetInstalledProducts();
+            var installedProducts = Search.SearchInstalledProducts();
 
             // If JetBrains products are installed, create product-specific pages
             if (installedProducts.Count != 0)
@@ -44,19 +44,9 @@ public sealed partial class JetBrainsTopLevelPage : JetBrainsAllProductPage
                     .OrderBy(product => product.Name)
                     .Select(product =>
                     {
-                        // Get the appropriate icon for each JetBrains product
-                        var icon = IconHelper.GetIconForProductInfo(product);
-
                         // Create a list item that navigates to a product-specific page
-                        var productName = JetBrainsHelper.GetProductName(product);
-                        var item = new ListItem(new JetBrainsProductPage(
-                            productName,
-                            productName,
-                            product.ProductCode,
-                            icon));
-
+                        var item = new ListItem(new JetBrainsProductPage(product));
                         item.Subtitle = product.Version;
-
                         return item;
                     })
                     .ToArray();

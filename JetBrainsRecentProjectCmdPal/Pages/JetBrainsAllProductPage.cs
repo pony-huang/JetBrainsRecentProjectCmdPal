@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrainsRecentProjectCmdPal.Helper;
 using JetBrainsRecentProjectCmdPal.Properties;
-using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JetBrainsRecentProjectCmdPal.Pages;
 
@@ -15,7 +14,7 @@ public partial class JetBrainsAllProductPage : BaseJetBrainsPage
     /// Initializes a new instance of the JetBrainsAllProductPage class.
     /// Sets up the page title, icon, name, and placeholder text for the unified view.
     /// </summary>
-    public JetBrainsAllProductPage()
+    protected JetBrainsAllProductPage()
     {
         Title = Resources.jetbrains_recent_projects_title;
         Icon = IconHelper.DefaultIconInfo;
@@ -29,7 +28,7 @@ public partial class JetBrainsAllProductPage : BaseJetBrainsPage
     /// </summary>
     /// <param name="allProjects">Complete list of recent projects from all JetBrains products</param>
     /// <returns>The same list of projects without any product-specific filtering applied</returns>
-    protected override List<RecentProject> FilterByProduct(List<RecentProject> allProjects)
+    protected override List<ProjectItem> FilterByProduct(List<ProjectItem> allProjects)
     {
         return allProjects;
     }

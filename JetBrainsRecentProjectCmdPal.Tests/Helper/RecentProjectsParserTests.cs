@@ -15,7 +15,7 @@ public class RecentProjectsParserTests
     }
 
 
-    #region Integration Tests (JetBrains 实际路径集成测试)
+    #region Integration Tests
 
     [Fact]
     public void IntegrationTestParseFromRealJetBrainsPath()
@@ -47,18 +47,18 @@ public class RecentProjectsParserTests
         foreach (var product in products)
         {
             // show json format
-            _output.WriteLine($"LaunchInfo: {JsonSerializer.Serialize(product,options)}");
+            _output.WriteLine($"LaunchInfo: {JsonSerializer.Serialize(product, options)}");
             _output.WriteLine("------------------------");
         }
     }
-    
+
     [Fact]
     public void IntegrationTestGetInstalledProductsContains()
     {
         var options = new JsonSerializerOptions { WriteIndented = true };
         var products = JetBrainsHelper.GetInstalledProducts("E:\\Jetbrains");
         var result = JetBrainsHelper.SearchRecentProjects("E:\\AppData\\Jetbrains", true);
-        
+
         var installedProductsDict = products
             .GroupBy(p => p.ProductCode)
             .ToDictionary(
@@ -78,8 +78,6 @@ public class RecentProjectsParserTests
                 }
             }
         }
-
-        
     }
 
     #endregion

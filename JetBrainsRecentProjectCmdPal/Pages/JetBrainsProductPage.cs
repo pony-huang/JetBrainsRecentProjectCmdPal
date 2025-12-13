@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrainsRecentProjectCmdPal.Helper;
+using JetBrainsRecentProjectCmdPal.Models;
 using JetBrainsRecentProjectCmdPal.Properties;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
@@ -26,34 +27,43 @@ public partial class JetBrainsProductPage : BaseJetBrainsPage
     /// Gets or sets the icon information for the specific JetBrains product
     /// </summary>
     private IconInfo ProductIcon { get; set; }
-
+    
+    private string ProductVersion { get; set; }
+    
+    private string ProductBuildNumber { get; set; }
+    
+    public string ProductVendor { get; set; }
+    
+    
     /// <summary>
     /// Initializes a new instance of the JetBrainsProductPage class for a specific JetBrains product.
     /// </summary>
-    /// <param name="name">The internal name identifier for the page</param>
-    /// <param name="title">The display title shown in the command palette</param>
-    /// <param name="productCode">The JetBrains product code used for filtering (e.g., "IU", "WS", "PS")</param>
-    /// <param name="icon">The icon information representing the specific JetBrains product</param>
-    public JetBrainsProductPage(String name, String title, String productCode, IconInfo icon)
+    /// <param name="product">Product information for the JetBrains product</param
+    public JetBrainsProductPage(ProductInfo product)
     {
-        Icon = icon;
-        Title = title;
-        Name = name;
-        ProductCode = productCode;
-        ProductIcon = icon;
-        PlaceholderText = string.Format(Resources.search_recent_projects_placeholder, title);
+        Icon = new IconInfo(product.AbsoluteSvgIconPath);
+        var productName = JetBrainsHelper.GetProductName(product.ProductCode, product.Name);
+        Title = productName;
+        Name = productName;
+        ProductCode = product.ProductCode;
+        ProductIcon = new IconInfo(product.AbsoluteSvgIconPath);
+        PlaceholderText = string.Format(Resources.search_recent_projects_placeholder, productName);
+        ProductVersion = product.Version;
+        ProductBuildNumber = product.BuildNumber;
+        ProductVendor = product.ProductVendor;
     }
 
     /// <summary>
-    /// Implements the product filtering logic for this specific product page.
-    /// Filters the complete project list to show only projects that match the configured product code.
+    /// This method filters projects based on the product code, build number, and product code.
     /// </summary>
     /// <param name="allProjects">Complete list of recent projects from all JetBrains products</param>
-    /// <returns>Filtered list containing only projects that were opened with the specific JetBrains product</returns>
-    protected override List<RecentProject> FilterByProduct(List<RecentProject> allProjects)
+    /// <returns>Filtered list of projects for the specific product</returns>
+    protected override List<ProjectItem> FilterByProduct(List<ProjectItem> allProjects)
     {
         return allProjects.Where(project =>
-                string.Equals(project.ProductionCode, ProductCode, StringComparison.OrdinalIgnoreCase))
+                string.Equals(project.Code, ProductCode, StringComparison.OrdinalIgnoreCase)
+                && project.ProjectBuild.Contains(ProductBuildNumber)
+                )
             .ToList();
     }
 }
