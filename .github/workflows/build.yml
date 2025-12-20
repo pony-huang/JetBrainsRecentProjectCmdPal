@@ -10,21 +10,36 @@ jobs:
   build:
     strategy:
       matrix:
-        platform: [x64, ARM64]
+        configuration: [ Release ]
+        platform: [ x64, arm64 ]
+        os: [ windows-latest, windows-11-arm ]
+        dotnet-version: [ '8.0.x' ]
+        exclude:
+          - os: windows-latest
+            platform: arm64
+          - os: windows-11-arm
+            platform: x64
 
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Setup .NET SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: ${{ matrix.dotnet-version }}
 
-      - name: Setup msbuild.exe
+      - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: '17.5'
+
+      - name: Download nuget
+        run: |
+          mkdir ".\.nuget"
+          Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile ".\.nuget\nuget.exe"    
 
       - name: Get version
         run: |
@@ -46,7 +61,7 @@ jobs:
       - name: Restore packages
         run: msbuild JetBrainsRecentProjectCmdPal.sln /t:Restore /p:Configuration=Release
 
-      - name: Build Currency Converter
+      - name: Build JetBrainsRecentProjectCmdPal
         run: msbuild JetBrainsRecentProjectCmdPal\JetBrainsRecentProjectCmdPal.csproj /p:Configuration=Release /p:Platform=${{matrix.platform}} /p:Version=${{env.VERSION}}
 
       - name: Prepare artifact
