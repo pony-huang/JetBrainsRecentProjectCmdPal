@@ -48,9 +48,9 @@ jobs:
           }
 
       - name: Restore packages
-        run: msbuild src\Extensions.sln /t:Restore /p:Configuration=Release
+        run: msbuild JetBrainsRecentProjectCmdPal.sln /t:Restore /p:Configuration=Release
 
-      - name: Build Visual Studio
+      - name: Build CmdPal
         run: msbuild JetBrainsRecentProjectCmdPal\JetBrainsRecentProjectCmdPal.csproj /p:Configuration=Release /p:Platform=${{matrix.platform}} /p:Version=${{env.VERSION}}
 
       - name: Prepare artifact
