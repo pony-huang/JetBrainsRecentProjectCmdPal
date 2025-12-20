@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
+      - '*'
 
 jobs:
   build:
@@ -29,18 +29,14 @@ jobs:
       - name: Get version
         run: |
           $tag = '${{github.ref}}'
-          if ($tag -match '-\d+\.\d+\.\d+$') {
-            $version = $tag -replace '^.*-', ''
-          } else {
-            $version = '0.0.1'
-          }
+          $version = $tag -replace 'refs/tags/', ''
           echo "VERSION=$version" >> $env:GITHUB_ENV
 
       - name: Set version
         run: |
           [Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq")
           $xIdentity = [System.Xml.Linq.XName]::Get("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Identity");
-          $appxmanifests = Get-ChildItem -Path src -Filter *.appxmanifest -Recurse
+          $appxmanifests = Get-ChildItem -Path JetBrainsRecentProjectCmdPal -Filter *.appxmanifest -Recurse
           foreach ($appxmanifestPath in $appxmanifests) {
             $appxmanifest = [System.Xml.Linq.XDocument]::Load($appxmanifestPath)
             $appxmanifest.Root.Element($xIdentity).Attribute("Version").Value = "${{env.VERSION}}.0"
@@ -50,18 +46,18 @@ jobs:
       - name: Restore packages
         run: msbuild JetBrainsRecentProjectCmdPal.sln /t:Restore /p:Configuration=Release
 
-      - name: Build CmdPal
+      - name: Build Currency Converter
         run: msbuild JetBrainsRecentProjectCmdPal\JetBrainsRecentProjectCmdPal.csproj /p:Configuration=Release /p:Platform=${{matrix.platform}} /p:Version=${{env.VERSION}}
 
       - name: Prepare artifact
         run: |
           New-Item -Type Directory build
-          Get-ChildItem -Path src -Recurse -Include *.msix | Where-Object { $_.FullName -notmatch "\\Dependencies\\" } | ForEach-Object {
+          Get-ChildItem -Path JetBrainsRecentProjectCmdPal -Recurse -Include *.msix | Where-Object { $_.FullName -notmatch "\\Dependencies\\" } | ForEach-Object {
             Copy-Item -Path $_.FullName -Destination build
           }
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Build-${{env.VERSION}}-${{matrix.platform}}
+          name: CurrencyConverter-${{env.VERSION}}-${{matrix.platform}}
           path: build\*.msix
