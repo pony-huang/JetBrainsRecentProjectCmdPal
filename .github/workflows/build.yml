@@ -23,8 +23,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          clean: true
 
       - name: Setup .NET SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v4
@@ -48,11 +49,11 @@ jobs:
             $appxmanifest.Save($appxmanifestPath)
           }
 
-      - name: Restore packages
-        run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore JetBrainsRecentProjectCmdPal.sln
 
-      - name: Build JetBrainsRecentProjectCmdPal
-        run: dotnet build JetBrainsRecentProjectCmdPal\JetBrainsRecentProjectCmdPal.csproj -c Release -p:Platform=${{matrix.platform}} -p:Version=${{env.VERSION}}
+      - name: Build
+        run: dotnet build JetBrainsRecentProjectCmdPal.sln -c ${{ matrix.configuration }} -p:Platform=${{ matrix.platform }} -p:Version=${{env.VERSION}} -p:UseParallelBuild=false
 
       - name: Prepare artifact
         run: |
@@ -64,5 +65,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CurrencyConverter-${{env.VERSION}}-${{matrix.platform}}
+          name: JetBrainsRecentProjectCmdPal-${{env.VERSION}}-${{matrix.platform}}
           path: build\*.msix
