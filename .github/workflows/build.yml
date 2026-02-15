@@ -36,7 +36,12 @@ jobs:
         run: |
           $tag = '${{github.ref}}'
           $version = $tag -replace 'refs/tags/', ''
+          # Handle non-tag refs (e.g., refs/heads/main)
+          if ($version -match '^refs/(heads|remotes)/') {
+            $version = '0.0.0'
+          }
           echo "VERSION=$version" >> $env:GITHUB_ENV
+          echo "Extracted version: $version"
 
       - name: Set version
         run: |
