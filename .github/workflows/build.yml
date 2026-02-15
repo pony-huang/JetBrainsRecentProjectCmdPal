@@ -32,6 +32,11 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
 
+      - name: Install Windows SDK
+        uses: fbactions/setup-winsdk@v1
+        with:
+          winsdk-build-version: 22621
+
       - name: Get version
         run: |
           $tag = '${{github.ref}}'
