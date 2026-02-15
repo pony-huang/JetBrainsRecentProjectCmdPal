@@ -32,13 +32,6 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
 
-      - name: Install Windows SDK
-        run: |
-          Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2203825" -OutFile "winsdksetup.exe"
-          Start-Process -FilePath "winsdksetup.exe" -ArgumentList "/quiet /norestart /features OptionId.UWPCpp" -Wait
-          Remove-Item "winsdksetup.exe"
-        shell: pwsh
-
       - name: Get version
         run: |
           $tag = '${{github.ref}}'
