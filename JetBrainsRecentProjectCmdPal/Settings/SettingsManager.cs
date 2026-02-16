@@ -50,9 +50,19 @@ public class SettingsManager : JsonSettingsManager
 
     private static string SettingsJsonPath()
     {
-        var dir = Utilities.BaseSettingsPath("Microsoft.CmdPal");
-        Directory.CreateDirectory(dir);
-        return Path.Combine(dir, "JetBrainsRecentProjectCmdPal.json");
+        try
+        {
+            var dir = Utilities.BaseSettingsPath("Microsoft.CmdPal");
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            return Path.Combine(dir, "JetBrainsRecentProjectCmdPal.json");
+        }
+        catch
+        {
+            return Path.Combine(Path.GetTempPath(), "JetBrainsRecentProjectCmdPal.json");
+        }
     }
 
     public SettingsManager()

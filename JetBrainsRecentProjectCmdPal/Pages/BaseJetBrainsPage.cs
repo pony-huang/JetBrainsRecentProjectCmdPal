@@ -155,7 +155,7 @@ public abstract class BaseJetBrainsPage : DynamicListPage, IDisposable, IFallbac
     /// </summary>
     /// <param name="item">The recent project to convert</param>
     /// <returns>Configured IListItem for display in the command palette</returns>
-    private ListItem CreateListItemFromProject(ProjectItem item)
+    private static ListItem CreateListItemFromProject(ProjectItem item)
     {
         string shell = item.Bin;
         var arg = $"\"{item.WorkPlacePath}\"";
@@ -233,7 +233,7 @@ public abstract class BaseJetBrainsPage : DynamicListPage, IDisposable, IFallbac
     /// </summary>
     /// <param name="item">The project to create details for</param>
     /// <returns>Details object containing formatted project metadata</returns>
-    private Details CreateProjectDetails(ProjectItem item)
+    private static Details CreateProjectDetails(ProjectItem item)
     {
         var metadata = new List<IDetailsElement>();
 

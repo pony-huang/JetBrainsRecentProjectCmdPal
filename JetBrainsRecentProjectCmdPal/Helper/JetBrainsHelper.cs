@@ -15,17 +15,6 @@ namespace JetBrainsRecentProjectCmdPal.Helper;
 /// </summary>
 public static class JetBrainsHelper
 {
-
-
-    /// <summary>
-    /// JSON serialization options with case-insensitive property names
-    /// </summary>
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        TypeInfoResolver = AppJsonContext.Default
-    };
-
     /// <summary>
     /// Gets the list of installed product information for the specified installation location
     /// </summary>
@@ -85,7 +74,7 @@ public static class JetBrainsHelper
         try
         {
             var json = File.ReadAllText(productInfoPath);
-            return JsonSerializer.Deserialize<ProductInfo>(json, JsonOptions);
+            return JsonSerializer.Deserialize(json, AppJsonContext.Default.ProductInfo);
         }
         catch (Exception ex)
         {
@@ -140,7 +129,7 @@ public static class JetBrainsHelper
         try
         {
             var json = File.ReadAllText(productInfoPath);
-            var info = JsonSerializer.Deserialize<ProductInfo>(json, JsonOptions)!;
+            var info = JsonSerializer.Deserialize(json, AppJsonContext.Default.ProductInfo)!;
             return string.Equals(info?.ProductCode, productCode, StringComparison.OrdinalIgnoreCase);
         }
         catch
@@ -158,6 +147,11 @@ public static class JetBrainsHelper
     public static List<string> SearchRecentProjectXml(string directPath, bool isCustom)
     {
         var projects = new List<string>();
+
+        if (!Directory.Exists(directPath))
+        {
+            return projects;
+        }
 
         foreach (var dir in Directory.GetDirectories(directPath))
         {
