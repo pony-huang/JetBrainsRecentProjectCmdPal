@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -15,11 +14,7 @@ namespace JetBrainsRecentProjectCmdPal.Helper;
 /// </summary>
 public static class RecentProjectsParser
 {
-    /// <summary>
-    /// From XML file parse recent projects list
-    /// </summary>
-    /// <param name="xmlFilePath">recentProjects.xml file path</param>
-    /// <returns>Recent projects list</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency in CreateRecentProjectsSerializer.")]
     public static List<RecentProject> ParseFromFile(string xmlFilePath)
     {
         ArgumentNullException.ThrowIfNull(xmlFilePath);
@@ -39,11 +34,7 @@ public static class RecentProjectsParser
         }
     }
 
-    /// <summary>
-    /// From XML string parse recent projects list
-    /// </summary>
-    /// <param name="xmlContent">XML content string</param>
-    /// <returns>Recent projects list</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency in CreateRecentProjectsSerializer.")]
     public static List<RecentProject> ParseFromXmlString(string xmlContent)
     {
         ArgumentNullException.ThrowIfNull(xmlContent);
@@ -85,11 +76,7 @@ public static class RecentProjectsParser
         return projects;
     }
 
-    /// <summary>
-    /// Gets the path of the last opened project
-    /// </summary>
-    /// <param name="xmlFilePath">Path to recentProjects.xml file</param>
-    /// <returns>Path of the last opened project</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency in CreateRecentProjectsSerializer.")]
     public static string? GetLastOpenedProject(string xmlFilePath)
     {
         ArgumentNullException.ThrowIfNull(xmlFilePath);
@@ -127,11 +114,7 @@ public static class RecentProjectsParser
         return null;
     }
 
-    /// <summary>
-    /// Gets the last project location
-    /// </summary>
-    /// <param name="xmlFilePath">Path to recentProjects.xml file</param>
-    /// <returns>Last project location</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency in CreateRecentProjectsSerializer.")]
     public static string? GetLastProjectLocation(string xmlFilePath)
     {
         ArgumentNullException.ThrowIfNull(xmlFilePath);
@@ -169,7 +152,17 @@ public static class RecentProjectsParser
         return null;
     }
 
-    [RequiresUnreferencedCode("XmlSerializer requires dynamic code for serialization/deserialization")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency on RecentProjects* model types.")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsApplication))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsManager))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsOption))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsList))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsListOption))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsMap))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsEntry))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsEntryValue))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectMetaInfo))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectMetaInfoOption))]
     private static XmlSerializer CreateRecentProjectsSerializer()
     {
         return new XmlSerializer(typeof(RecentProjectsApplication));
