@@ -5,7 +5,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JetBrainsRecentProjectCmdPal.Commands
 {
-    public class OpenExplorerCommand : InvokableCommand
+    public partial class OpenExplorerCommand : InvokableCommand
     {
         private readonly string _fullPath;
         private readonly string _arguments;

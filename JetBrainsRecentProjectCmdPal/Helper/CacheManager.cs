@@ -13,9 +13,9 @@ public class CacheManager<T>
         _expiry = expiry;
     }
 
-    public bool TryGet(string key, out T value)
+    public bool TryGet(string key, out T? value)
     {
-        value = default(T);
+        value = default;
 
         if (!_cache.TryGetValue(key, out var cachedItem))
             return false;

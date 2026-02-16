@@ -6,6 +6,6 @@ namespace JetBrainsRecentProjectCmdPal.Serialization;
 [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(ProductInfo))]
 [JsonSerializable(typeof(LaunchInfo))]
-internal partial class AppJsonContext : JsonSerializerContext
+internal sealed partial class AppJsonContext : JsonSerializerContext
 {
 }

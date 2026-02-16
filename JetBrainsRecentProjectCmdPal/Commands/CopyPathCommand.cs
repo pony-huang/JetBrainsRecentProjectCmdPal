@@ -5,7 +5,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JetBrainsRecentProjectCmdPal.Commands;
 
-public class CopyPathCommand : InvokableCommand
+public partial class CopyPathCommand : InvokableCommand
 {
     private readonly string _fullPath;
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using JetBrainsRecentProjectCmdPal.Helper;
 using JetBrainsRecentProjectCmdPal.Properties;
 
@@ -19,7 +20,7 @@ public partial class JetBrainsAllProductPage : BaseJetBrainsPage
         Title = Resources.jetbrains_recent_projects_title;
         Icon = IconHelper.DefaultIconInfo;
         Name = Resources.jetbrains_recent_projects_name;
-        PlaceholderText = string.Format(Resources.search_recent_projects_placeholder, Title);
+        PlaceholderText = string.Format(CultureInfo.InvariantCulture, Resources.search_recent_projects_placeholder, Title);
     }
 
     /// <summary>

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using JetBrainsRecentProjectCmdPal.Helper;
 using JetBrainsRecentProjectCmdPal.Models;
@@ -47,7 +48,7 @@ public partial class JetBrainsProductPage : BaseJetBrainsPage
         Name = productName;
         ProductCode = product.ProductCode;
         ProductIcon = new IconInfo(product.AbsoluteSvgIconPath);
-        PlaceholderText = string.Format(Resources.search_recent_projects_placeholder, productName);
+        PlaceholderText = string.Format(CultureInfo.InvariantCulture, Resources.search_recent_projects_placeholder, productName);
         ProductVersion = product.Version;
         ProductBuildNumber = product.BuildNumber;
         ProductVendor = product.ProductVendor;

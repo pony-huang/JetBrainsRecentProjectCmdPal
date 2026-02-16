@@ -123,7 +123,7 @@ public abstract class BaseJetBrainsPage : DynamicListPage, IDisposable, IFallbac
     /// <param name="projects">List of projects to filter</param>
     /// <param name="query">Search query string</param>
     /// <returns>Filtered list of projects matching the search criteria</returns>
-    private List<ProjectItem> FilterByQuery(List<ProjectItem> projects, string query)
+    private static List<ProjectItem> FilterByQuery(List<ProjectItem> projects, string query)
     {
         if (string.IsNullOrWhiteSpace(query))
             return projects;
@@ -141,7 +141,7 @@ public abstract class BaseJetBrainsPage : DynamicListPage, IDisposable, IFallbac
     /// </summary>
     /// <param name="projects">List of projects to sort</param>
     /// <returns>Sorted list of projects</returns>
-    private List<ProjectItem> SortProjects(List<ProjectItem> projects)
+    private static List<ProjectItem> SortProjects(List<ProjectItem> projects)
     {
         return projects
             .OrderByDescending(p => p.ProjectIsOpened)
@@ -351,7 +351,7 @@ public abstract class BaseJetBrainsPage : DynamicListPage, IDisposable, IFallbac
     /// </summary>
     /// <param name="metadata">The metadata list to add timestamp details to</param>
     /// <param name="item">The project containing timestamp information</param>
-    private void AddTimestampDetails(List<IDetailsElement> metadata, ProjectItem item)
+    private static void AddTimestampDetails(List<IDetailsElement> metadata, ProjectItem item)
     {
         // Add last activation timestamp if available
         if (item.Project.ActivationTimestamp > 0)

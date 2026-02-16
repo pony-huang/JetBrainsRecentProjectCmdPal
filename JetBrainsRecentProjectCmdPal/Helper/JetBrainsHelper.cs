@@ -76,7 +76,7 @@ public static class JetBrainsHelper
     /// </summary>
     /// <param name="productDir">Product directory path</param>
     /// <returns>Product information object, returns null if loading fails</returns>
-    public static ProductInfo LoadProductInfoFromDirectory(string productDir)
+    public static ProductInfo? LoadProductInfoFromDirectory(string productDir)
     {
         var productInfoPath = Path.Combine(productDir, "product-info.json");
         if (!File.Exists(productInfoPath))
@@ -85,7 +85,7 @@ public static class JetBrainsHelper
         try
         {
             var json = File.ReadAllText(productInfoPath);
-            return JsonSerializer.Deserialize<ProductInfo>(json, JsonOptions)!;
+            return JsonSerializer.Deserialize<ProductInfo>(json, JsonOptions);
         }
         catch (Exception ex)
         {
