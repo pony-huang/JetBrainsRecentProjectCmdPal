@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using JetBrainsRecentProjectCmdPal.Helper;
 using JetBrainsRecentProjectCmdPal.Properties;
 
@@ -11,6 +12,8 @@ namespace JetBrainsRecentProjectCmdPal.Pages;
 /// </summary>
 public partial class JetBrainsAllProductPage : BaseJetBrainsPage
 {
+    private static readonly CompositeFormat PlaceholderFormat = CompositeFormat.Parse(Resources.search_recent_projects_placeholder);
+
     /// <summary>
     /// Initializes a new instance of the JetBrainsAllProductPage class.
     /// Sets up the page title, icon, name, and placeholder text for the unified view.
@@ -20,7 +23,7 @@ public partial class JetBrainsAllProductPage : BaseJetBrainsPage
         Title = Resources.jetbrains_recent_projects_title;
         Icon = IconHelper.DefaultIconInfo;
         Name = Resources.jetbrains_recent_projects_name;
-        PlaceholderText = string.Format(CultureInfo.InvariantCulture, Resources.search_recent_projects_placeholder, Title);
+        PlaceholderText = string.Format(CultureInfo.InvariantCulture, PlaceholderFormat, Title);
     }
 
     /// <summary>

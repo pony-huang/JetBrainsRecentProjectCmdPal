@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using JetBrainsRecentProjectCmdPal.Models;
@@ -63,7 +63,7 @@ public static class Search
     {
         var cacheKey = $"all_project";
         var tryGet = ProductInfoCache.TryGet(cacheKey, out var cachedProducts);
-        if (tryGet)
+        if (tryGet && cachedProducts is not null)
             return cachedProducts;
         var searchInstalledProducts = SearchInstalledProducts();
         var searchRecentProjects = SearchRecentProjects();

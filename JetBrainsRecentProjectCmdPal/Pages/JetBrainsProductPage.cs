@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using JetBrainsRecentProjectCmdPal.Helper;
 using JetBrainsRecentProjectCmdPal.Models;
 using JetBrainsRecentProjectCmdPal.Properties;
@@ -24,6 +25,8 @@ public partial class JetBrainsProductPage : BaseJetBrainsPage
     /// </summary>
     private string ProductCode { get; set; }
     
+    private static readonly CompositeFormat PlaceholderFormat = CompositeFormat.Parse(Resources.search_recent_projects_placeholder);
+
     /// <summary>
     /// Gets or sets the icon information for the specific JetBrains product
     /// </summary>
@@ -48,7 +51,7 @@ public partial class JetBrainsProductPage : BaseJetBrainsPage
         Name = productName;
         ProductCode = product.ProductCode;
         ProductIcon = new IconInfo(product.AbsoluteSvgIconPath);
-        PlaceholderText = string.Format(CultureInfo.InvariantCulture, Resources.search_recent_projects_placeholder, productName);
+        PlaceholderText = string.Format(CultureInfo.InvariantCulture, PlaceholderFormat, productName);
         ProductVersion = product.Version;
         ProductBuildNumber = product.BuildNumber;
         ProductVendor = product.ProductVendor;
