@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using System.Xml.Serialization;
+using System.Xml.Linq;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace JetBrainsRecentProjectCmdPal.Helper;
@@ -14,7 +13,6 @@ namespace JetBrainsRecentProjectCmdPal.Helper;
 /// </summary>
 public static class RecentProjectsParser
 {
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency in CreateRecentProjectsSerializer.")]
     public static List<RecentProject> ParseFromFile(string xmlFilePath)
     {
         ArgumentNullException.ThrowIfNull(xmlFilePath);
@@ -34,7 +32,6 @@ public static class RecentProjectsParser
         }
     }
 
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency in CreateRecentProjectsSerializer.")]
     public static List<RecentProject> ParseFromXmlString(string xmlContent)
     {
         ArgumentNullException.ThrowIfNull(xmlContent);
@@ -52,20 +49,76 @@ public static class RecentProjectsParser
             using var stringReader = new StringReader(xmlContent);
             using var xmlReader = XmlReader.Create(stringReader, settings);
             
-            var serializer = CreateRecentProjectsSerializer();
-            if (serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
-            {
-                var additionalInfoOption = app.Component.Options
-                    .FirstOrDefault(o => o.Name == "additionalInfo");
+            var doc = XDocument.Load(xmlReader);
+            var component = doc.Element("application")
+                             ?.Elements("component")
+                             .FirstOrDefault(e => e.Attribute("name")?.Value == "RecentProjectsManager");
 
-                if (additionalInfoOption?.Map?.Entries != null)
+            if (component == null) return projects;
+
+            var additionalInfoOption = component.Elements("option")
+                .FirstOrDefault(e => e.Attribute("name")?.Value == "additionalInfo");
+
+            var map = additionalInfoOption?.Element("map");
+            if (map == null) return projects;
+
+            foreach (var entry in map.Elements("entry"))
+            {
+                var key = entry.Attribute("key")?.Value;
+                if (string.IsNullOrEmpty(key)) continue;
+
+                var project = new RecentProject { Key = key };
+                var metaInfo = entry.Element("value")?.Element("RecentProjectMetaInfo");
+                
+                if (metaInfo != null)
                 {
-                    projects = additionalInfoOption.Map.Entries
-                        .Select(RecentProject.FromEntry)
-                        .Where(p => !string.IsNullOrEmpty(p.Key))
-                        .ToList();
-                    return projects;
+                    foreach (var option in metaInfo.Elements("option"))
+                    {
+                        var name = option.Attribute("name")?.Value;
+                        var value = option.Attribute("value")?.Value;
+
+                        if (string.IsNullOrEmpty(name) || value == null) continue;
+
+                        switch (name)
+                        {
+                            case "displayName":
+                                project.Name = value;
+                                break;
+                            case "frameTitle":
+                                project.FrameTitle = value;
+                                break;
+                            case "productionCode":
+                                project.ProductionCode = value;
+                                break;
+                            case "activationTimestamp":
+                                if (long.TryParse(value, out var activationTime))
+                                    project.ActivationTimestamp = activationTime;
+                                break;
+                            case "projectOpenTimestamp":
+                                if (long.TryParse(value, out var openTime))
+                                    project.ProjectOpenTimestamp = openTime;
+                                break;
+                            case "build":
+                                project.Build = value;
+                                break;
+                            case "projectWorkspaceId":
+                                project.ProjectWorkspaceId = value;
+                                break;
+                            case "opened":
+                                if (bool.TryParse(value, out var isOpened))
+                                    project.IsOpened = isOpened;
+                                break;
+                        }
+                    }
                 }
+
+                // If no display name, use the last part of the path
+                if (string.IsNullOrEmpty(project.Name))
+                {
+                    project.Name = Path.GetFileName(project.Key) ?? project.Key;
+                }
+
+                projects.Add(project);
             }
         }
         catch (Exception ex)
@@ -76,7 +129,6 @@ public static class RecentProjectsParser
         return projects;
     }
 
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency in CreateRecentProjectsSerializer.")]
     public static string? GetLastOpenedProject(string xmlFilePath)
     {
         ArgumentNullException.ThrowIfNull(xmlFilePath);
@@ -97,14 +149,15 @@ public static class RecentProjectsParser
             using var stringReader = new StringReader(xmlContent);
             using var xmlReader = XmlReader.Create(stringReader, settings);
             
-            var serializer = CreateRecentProjectsSerializer();
-            if (serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
-            {
-                var lastOpenedOption = app.Component.Options
-                    .FirstOrDefault(o => o.Name == "lastOpenedProject");
-                
-                return lastOpenedOption?.Value;
-            }
+            var doc = XDocument.Load(xmlReader);
+            var component = doc.Element("application")
+                             ?.Elements("component")
+                             .FirstOrDefault(e => e.Attribute("name")?.Value == "RecentProjectsManager");
+
+            var lastOpenedOption = component?.Elements("option")
+                .FirstOrDefault(e => e.Attribute("name")?.Value == "lastOpenedProject");
+            
+            return lastOpenedOption?.Attribute("value")?.Value;
         }
         catch (Exception ex)
         {
@@ -114,7 +167,6 @@ public static class RecentProjectsParser
         return null;
     }
 
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency in CreateRecentProjectsSerializer.")]
     public static string? GetLastProjectLocation(string xmlFilePath)
     {
         ArgumentNullException.ThrowIfNull(xmlFilePath);
@@ -135,14 +187,15 @@ public static class RecentProjectsParser
             using var stringReader = new StringReader(xmlContent);
             using var xmlReader = XmlReader.Create(stringReader, settings);
             
-            var serializer = CreateRecentProjectsSerializer();
-            if (serializer.Deserialize(xmlReader) is RecentProjectsApplication app)
-            {
-                var lastLocationOption = app.Component.Options
-                    .FirstOrDefault(o => o.Name == "lastProjectLocation");
-                
-                return lastLocationOption?.Value;
-            }
+            var doc = XDocument.Load(xmlReader);
+            var component = doc.Element("application")
+                             ?.Elements("component")
+                             .FirstOrDefault(e => e.Attribute("name")?.Value == "RecentProjectsManager");
+
+            var lastLocationOption = component?.Elements("option")
+                .FirstOrDefault(e => e.Attribute("name")?.Value == "lastProjectLocation");
+            
+            return lastLocationOption?.Attribute("value")?.Value;
         }
         catch (Exception ex)
         {
@@ -150,21 +203,5 @@ public static class RecentProjectsParser
         }
 
         return null;
-    }
-
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "XmlSerializer dependencies are preserved via DynamicDependency on RecentProjects* model types.")]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsApplication))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsManager))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsOption))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsList))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsListOption))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsMap))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsEntry))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectsEntryValue))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectMetaInfo))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties, typeof(RecentProjectMetaInfoOption))]
-    private static XmlSerializer CreateRecentProjectsSerializer()
-    {
-        return new XmlSerializer(typeof(RecentProjectsApplication));
     }
 }

@@ -153,17 +153,24 @@ public static class JetBrainsHelper
             return projects;
         }
 
-        foreach (var dir in Directory.GetDirectories(directPath))
+        try
         {
-            var productName = Path.GetFileName(dir);
-            var recentProjectsPath = isCustom
-                ? GetRecentProjectsCustomPath(dir, productName)
-                : GetRecentProjectsPath(dir, productName);
-
-            if (!string.IsNullOrEmpty(recentProjectsPath) && File.Exists(recentProjectsPath))
+            foreach (var dir in Directory.GetDirectories(directPath))
             {
-                projects.Add(recentProjectsPath);
+                var productName = Path.GetFileName(dir);
+                var recentProjectsPath = isCustom
+                    ? GetRecentProjectsCustomPath(dir, productName)
+                    : GetRecentProjectsPath(dir, productName);
+
+                if (!string.IsNullOrEmpty(recentProjectsPath) && File.Exists(recentProjectsPath))
+                {
+                    projects.Add(recentProjectsPath);
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            ExtensionHost.LogMessage($"JBCML: Error searching recent project XML in {directPath}: {ex.Message}");
         }
 
         return projects;
